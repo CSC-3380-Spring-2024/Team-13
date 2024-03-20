@@ -1,0 +1,265 @@
+Using pre-set license
+Built from '2022.3/staging' branch; Version is '2022.3.22f1 (887be4894c44) revision 8944612'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 11  (10.0.22631) 64bit Professional' Language: 'en' Physical Memory: 32104 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 1
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker2
+-projectPath
+C:/Users/lando/OneDrive/Desktop/Team-13/Team-13-Clowning-Around-/Assets
+-logFile
+Logs/AssetImportWorker2.log
+-srvPort
+63520
+Successfully changed project path to: C:/Users/lando/OneDrive/Desktop/Team-13/Team-13-Clowning-Around-/Assets
+C:/Users/lando/OneDrive/Desktop/Team-13/Team-13-Clowning-Around-/Assets
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [27744] Host "[IP] 167.96.19.139 [Port] 0 [Flags] 2 [Guid] 3435051947 [EditorId] 3435051947 [Version] 1048832 [Id] WindowsEditor(7,LandonLaptop) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
+
+Player connection [27744] Host "[IP] 167.96.19.139 [Port] 0 [Flags] 2 [Guid] 3435051947 [EditorId] 3435051947 [Version] 1048832 [Id] WindowsEditor(7,LandonLaptop) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
+
+[Physics::Module] Initialized MultithreadedJobDispatcher with 11 workers.
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2022.3.22f1 (887be4894c44)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2022.3.22f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/lando/OneDrive/Desktop/Team-13/Team-13-Clowning-Around-/Assets/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: AMD Radeon (TM) Graphics (ID=0x15e7)
+    Vendor:   ATI
+    VRAM:     16052 MB
+    Driver:   31.0.14044.2
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2022.3.22f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2022.3.22f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2022.3.22f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56852
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2022.3.22f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.015184 seconds.
+- Loaded All Assemblies, in  1.440 seconds
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.500 seconds
+Domain Reload Profiling: 1934ms
+	BeginReloadAssembly (955ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (1ms)
+	RebuildCommonClasses (101ms)
+	RebuildNativeTypeToScriptingClass (26ms)
+	initialDomainReloadingComplete (124ms)
+	LoadAllAssembliesAndSetupDomain (227ms)
+		LoadAssemblies (948ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (223ms)
+			TypeCache.Refresh (221ms)
+				TypeCache.ScanAssembly (201ms)
+			ScanForSourceGeneratedMonoScriptInfo (1ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (501ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (395ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (19ms)
+			SetLoadedEditorAssemblies (12ms)
+			RefreshPlugins (0ms)
+			BeforeProcessingInitializeOnLoad (4ms)
+			ProcessInitializeOnLoadAttributes (265ms)
+			ProcessInitializeOnLoadMethodAttributes (94ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+========================================================================
+Worker process is ready to serve import requests
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.358 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for WindowsStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.643 seconds
+Domain Reload Profiling: 994ms
+	BeginReloadAssembly (233ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (12ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (34ms)
+	RebuildCommonClasses (47ms)
+	RebuildNativeTypeToScriptingClass (15ms)
+	initialDomainReloadingComplete (47ms)
+	LoadAllAssembliesAndSetupDomain (8ms)
+		LoadAssemblies (129ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (5ms)
+			TypeCache.Refresh (4ms)
+				TypeCache.ScanAssembly (0ms)
+			ScanForSourceGeneratedMonoScriptInfo (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (644ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (412ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (14ms)
+			SetLoadedEditorAssemblies (11ms)
+			RefreshPlugins (0ms)
+			BeforeProcessingInitializeOnLoad (56ms)
+			ProcessInitializeOnLoadAttributes (277ms)
+			ProcessInitializeOnLoadMethodAttributes (35ms)
+			AfterProcessingInitializeOnLoad (20ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (13ms)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.15 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 7 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3 unused Assets / (42.1 KB). Loaded Objects now: 478.
+Memory consumption went from 51.3 MB to 51.2 MB.
+Total: 5.085400 ms (FindLiveObjects: 0.065700 ms CreateObjectMapping: 0.006100 ms MarkObjects: 4.906100 ms  DeleteObjects: 0.106200 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:video-codec-MediaFoundation-h265: 746d11721c4dcdbdad8f713fa42b33f4 -> 
+  custom:CustomObjectIndexerAttribute: 9a22284fe3817be447336de3de66b15e -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:SearchIndexIgnoredProperties: e643bd26f0fe6173181afceb89e7c659 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:AudioImporter_EditorPlatform: d09bf68614088b80899f8185d706f6e7 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 1138120.338419 seconds.
+  path: Assets/City Intersection Block.png
+  artifactKey: Guid(2579e425a8a4ac14c96be9b1869c9e11) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/City Intersection Block.png using Guid(2579e425a8a4ac14c96be9b1869c9e11) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'daf4cef574239bd9c6eec920fc9569fd') in 0.941872 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.012539 seconds.
+  path: Assets/ClownSprite_1__Confused_Face_-removebg-preview.png
+  artifactKey: Guid(a2c70c8d8fb8584488b9237c50b06be2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ClownSprite_1__Confused_Face_-removebg-preview.png using Guid(a2c70c8d8fb8584488b9237c50b06be2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b94c0efd18b2e4d7c00ff68d04e201ab') in 0.029888 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000092 seconds.
+  path: Assets/Sprite_1__Left_Walk_Animation_2_-removebg-preview.png
+  artifactKey: Guid(855c4ce54b4c11f43bc6623c128b08dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprite_1__Left_Walk_Animation_2_-removebg-preview.png using Guid(855c4ce54b4c11f43bc6623c128b08dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '07c5524a96999230970cf92546af8461') in 0.027728 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Sprite_1__Left_Walk_Animation_2_-removebg-preview 1.png
+  artifactKey: Guid(b3c5b4c439e9c2741bd0d4090c5ded99) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprite_1__Left_Walk_Animation_2_-removebg-preview 1.png using Guid(b3c5b4c439e9c2741bd0d4090c5ded99) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '25831c7d14836c7b88717303ac4f7bf8') in 0.018921 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000313 seconds.
+  path: Assets/Clown_Spritet1-removebg-preview.png
+  artifactKey: Guid(8046310da351bdd4aa5ef3d969a70582) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Clown_Spritet1-removebg-preview.png using Guid(8046310da351bdd4aa5ef3d969a70582) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ebc28210571a423780c607921c7a2330') in 0.020141 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/Sprite_1__Right_Walk_Animation_2_-removebg-preview.png
+  artifactKey: Guid(3d3844f6b723de747a0c7cfe6bd97998) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprite_1__Right_Walk_Animation_2_-removebg-preview.png using Guid(3d3844f6b723de747a0c7cfe6bd97998) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1da64d01fbf0dd27e3aec44e7dca9499') in 0.011519 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000018 seconds.
+  path: Assets/Normal Street Block (Horizontal).asset
+  artifactKey: Guid(4997878c997cdf44392d1a0aea4127fe) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Normal Street Block (Horizontal).asset using Guid(4997878c997cdf44392d1a0aea4127fe) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '779c19ffdc5d0398391fd1e951248ceb') in 1.064934 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.001992 seconds.
+  path: Assets/Normal Street Block (Vertical).png
+  artifactKey: Guid(7ba99b8af59cb6e4d9e3c16dcedb7a7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Normal Street Block (Vertical).png using Guid(7ba99b8af59cb6e4d9e3c16dcedb7a7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6c5961633691dd998a7a1b365dd3d51d') in 0.030159 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/City Intersection Block.asset
+  artifactKey: Guid(3274938f92bff514483ff6be9b1eda39) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/City Intersection Block.asset using Guid(3274938f92bff514483ff6be9b1eda39) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e10c44462587dfda59455a2d8faf152f') in 0.012032 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000095 seconds.
+  path: Assets/Clown_Sprite_1___Front_Walk_Animation_2_-removebg-preview.png
+  artifactKey: Guid(ec242f8da715c5d43810d9f31d2b02c2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Clown_Sprite_1___Front_Walk_Animation_2_-removebg-preview.png using Guid(ec242f8da715c5d43810d9f31d2b02c2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e1b356fdea056319a42d4f418ec19e4d') in 0.015693 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Sprite_1__Right_Walk_Animation_1_-removebg-preview.png
+  artifactKey: Guid(4bbb76832533dd74f9974a9c12efb940) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprite_1__Right_Walk_Animation_1_-removebg-preview.png using Guid(4bbb76832533dd74f9974a9c12efb940) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1f882de8ba5d8ba6eeb657610dbf17f1') in 0.039673 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 3
