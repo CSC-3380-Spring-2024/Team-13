@@ -1,4 +1,9 @@
-/Assets/Library
-/Assets/Temp
-/Assets/Logs
-
+/BuildTest
+/Library
+/Logs
+/Temp
+/obj
+/UserSettings
+**.sln
+**.csproj
+/MemoreCaptures
