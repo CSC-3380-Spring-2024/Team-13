@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
             var randint = Random.Range(1, 100);
             if(randint <= battlechance && randint > 0)
             {
-                battlechance = 1;
+                battlechance = .75;
                 SceneManager.LoadScene("BattleScene");
             }
             else

@@ -708,7 +708,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 1c8f6f7cfb5dd1e429335aa0bde44cd5, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -928,8 +928,6 @@ MonoBehaviour:
   baseDefense: 250
   name: The Ultimate CEO of Rich People
   maxHP: 99999
-  currentMP: 0
-  maxMP: 0
   enemyTurnCount: 3
 --- !u!4 &545100976
 Transform:
@@ -1202,8 +1200,6 @@ MonoBehaviour:
   baseDefense: 200
   name: ' the Big Boss (what a trill...)'
   maxHP: 70000
-  currentMP: 0
-  maxMP: 0
   enemyTurnCount: 2
 --- !u!4 &674243249
 Transform:
@@ -1525,6 +1521,66 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 703732965702778934, guid: ba80d6de9bdce0b44b71798f0eff0994, type: 3}
   m_PrefabInstance: {fileID: 4250148829850093503}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &962601235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 962601238}
+  - component: {fileID: 962601237}
+  - component: {fileID: 962601236}
+  m_Layer: 0
+  m_Name: VisualScripting SceneVariables
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &962601236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962601235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 765181c9ef4b24d32a4f7cbd2ef370dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &962601237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962601235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"declarations":{"Kind":"Scene","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
+--- !u!4 &962601238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962601235}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &998386180
 GameObject:
   m_ObjectHideFlags: 0
@@ -2050,8 +2106,6 @@ MonoBehaviour:
   baseDefense: 75
   name: 
   maxHP: 50000
-  currentMP: 0
-  maxMP: 0
   enemyTurnCount: 0
 --- !u!4 &1272801566
 Transform:
@@ -4246,7 +4300,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2078660119}
   - component: {fileID: 2078660118}
-  - component: {fileID: 2078660117}
+  - component: {fileID: 2078660120}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4254,14 +4308,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &2078660117
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2078660116}
-  m_Enabled: 1
 --- !u!20 &2078660118
 Camera:
   m_ObjectHideFlags: 0
@@ -4328,6 +4374,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &2078660120
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078660116}
+  m_Enabled: 1
 --- !u!1 &2095952632
 GameObject:
   m_ObjectHideFlags: 0
@@ -4901,3 +4955,4 @@ SceneRoots:
   - {fileID: 1272801566}
   - {fileID: 545100976}
   - {fileID: 674243249}
+  - {fileID: 962601238}

@@ -35,7 +35,6 @@ public class BattleSystem : MonoBehaviour
 
     public BattleState state;
     public PartyTurn turn;
- 
 
     public GameObject playerPrefab1;
     public GameObject playerPrefab2;
@@ -61,14 +60,11 @@ public class BattleSystem : MonoBehaviour
     public Transform enemyBattleStation3;
 
 
-
     void Start()
     {
-
         battleCount = 1; 
         state = BattleState.START;
-        StartCoroutine(setupBattle(battleCount));
-        
+        StartCoroutine(setupBattle(battleCount)); 
     }
 
     IEnumerator setupBattle(int battleNum)
@@ -80,37 +76,43 @@ public class BattleSystem : MonoBehaviour
         GameObject playerGO3 = Instantiate(playerPrefab3, playerBattleStation);
         playerUnit3 = playerGO3.GetComponent<PlayerScript>();
 
-        if (battleNum == 1)
-        {
-            GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
-            enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
-            enemyImage.sprite = upset1;
+        switch (battleNum){
+        case 1: 
+            {
+                GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
+                enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
+                enemyImage.sprite = upset1;
+                break;
+            }
+        case 2: 
+            {
+                GameObject enemyGO = Instantiate(enemyPrefab2, enemyBattleStation1);
+                enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
+                enemyImage.sprite = upset2;
+                break;
+            }
+        case 3: 
+            {
+                GameObject enemyGO = Instantiate(enemyPrefab2, enemyBattleStation1);
+                enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
+                enemyImage.sprite = upset3;
+                break;
+            }       
+        case 4: 
+            {
+                GameObject enemyGO = Instantiate(enemyPrefab4, enemyBattleStation1);
+                enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
+                enemyImage.sprite = upset4;
+                break;
+            }
+        default:
+            {
+                GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
+                enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
+                enemyImage.sprite = upset1;
+                break;
+            }
         }
-        else if(battleNum == 2)
-        {
-            GameObject enemyGO = Instantiate(enemyPrefab2, enemyBattleStation1);
-            enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
-            enemyImage.sprite = upset2;
-        }
-        else if (battleNum == 3)
-        {
-            GameObject enemyGO = Instantiate(enemyPrefab2, enemyBattleStation1);
-            enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
-            enemyImage.sprite = upset3;
-        }       
-        else if (battleNum == 4)
-        {
-            GameObject enemyGO = Instantiate(enemyPrefab4, enemyBattleStation1);
-            enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
-            enemyImage.sprite = upset4;
-        }
-        else
-        {
-            GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
-            enemyUnit1 = enemyGO.GetComponent<PlayerScript>();
-            enemyImage.sprite = upset1;
-        }
-       
 
         DialogueText.text = "You were attacked by " + enemyUnit1.name + "!";
         playerHUD1.SetHUD(playerUnit1);
@@ -151,7 +153,7 @@ public class BattleSystem : MonoBehaviour
             SpecialText.text = "Nah, I'd Win";
 
         }
-        else if (playerUnit2.currentHP < 0)
+        else if (playerUnit3.currentHP > 0)
         {
             DialogueText.text = "Qwynn is unconscious!";
             yield return new WaitForSeconds(4f);
@@ -162,7 +164,11 @@ public class BattleSystem : MonoBehaviour
             SupportText.text = "Manga Spoiler";
             SpecialText.text = "Final Form";
         }
-        
+        else 
+        {
+            state = BattleState.LOST;
+            StartCoroutine(EndBattle());
+        }
     }
 
     IEnumerator EnemyTurn(int turnsLeft)
@@ -171,6 +177,14 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         var random = new System.Random();
         int rand = random.Next(0, 14);
+        int numTurns=turnsLeft;
+        
+        //Testing damage of enemy attack
+
+        //PlayerScript targett = enemyTarget();
+        //targett.TakeDamage(targett.currentHP);
+        //UpdatePlayerHealth();
+        //StartCoroutine(CheckPartyHP(numTurns));
 
         if (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense)
         {
@@ -179,37 +193,8 @@ public class BattleSystem : MonoBehaviour
                 RemoveDebuffs(enemyUnit1);
                 DialogueText.text = "The enemy removed all debuffs on themself!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
 
             }
             else if(rand > 2 && rand < 5)
@@ -220,33 +205,8 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
@@ -259,33 +219,8 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
 
             }
             else if(rand >= 8 || rand <= 10)
@@ -294,33 +229,8 @@ public class BattleSystem : MonoBehaviour
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
@@ -328,33 +238,8 @@ public class BattleSystem : MonoBehaviour
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
         }
         
@@ -367,33 +252,8 @@ public class BattleSystem : MonoBehaviour
                 RemoveBuffs(playerUnit3);
                 DialogueText.text = "The enemy removed all of your buffs!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 2 && rand < 5)
             {
@@ -403,33 +263,8 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
@@ -442,34 +277,8 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
-
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 8 || rand <= 10)
             {
@@ -477,35 +286,8 @@ public class BattleSystem : MonoBehaviour
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
-
-
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
@@ -513,38 +295,11 @@ public class BattleSystem : MonoBehaviour
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
         }
         
-        
-
         else if (((playerUnit1.attack > playerUnit1.baseAttack) || (playerUnit1.attack > playerUnit3.baseAttack) || (playerUnit3.attack > playerUnit3.baseAttack) || (playerUnit1.defense > playerUnit1.baseDefense) || (playerUnit2.defense > playerUnit2.baseDefense) || (playerUnit1.defense > playerUnit1.baseDefense)) && (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense))
         {
             if (rand == 1)
@@ -554,65 +309,16 @@ public class BattleSystem : MonoBehaviour
                 RemoveBuffs(playerUnit3);
                 DialogueText.text = "The enemy removed all of your buffs!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand == 2)
             {
                 RemoveDebuffs(enemyUnit1);
                 DialogueText.text = "The enemy removed all debuffs on themself!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 2 && rand < 5)
             {
@@ -622,34 +328,8 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
-
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
@@ -662,34 +342,8 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
-
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 8 || rand <= 10)
             {
@@ -697,34 +351,8 @@ public class BattleSystem : MonoBehaviour
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
-
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
@@ -732,33 +360,8 @@ public class BattleSystem : MonoBehaviour
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                //updates the targeted member's health UI
-                playerHUD1.SetHP(playerUnit1.currentHP);
-                playerHUD2.SetHP(playerUnit2.currentHP);
-                playerHUD3.SetHP(playerUnit3.currentHP);
-
-                //checks if all of the party is dead
-                if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-                {
-                    state = BattleState.LOST;
-                    StartCoroutine(EndBattle());
-                }
-
-                else
-                {
-                    //lets the enemy move again if they have remaining turns
-                    if (turnsLeft > 0)
-                    {
-                        DialogueText.text = "The enemy moves again!";
-                        yield return new WaitForSeconds(2f);
-                        StartCoroutine(EnemyTurn(turnsLeft - 1));
-                    }
-                    else
-                    {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(PlayerTurn());
-                    }
-                }
+                UpdatePlayerHealth();
+                StartCoroutine(CheckPartyHP(numTurns));
             }
         }
         //the enemy does a basic attack
@@ -768,37 +371,9 @@ public class BattleSystem : MonoBehaviour
             target.TakeDamage(enemyUnit1.attack - target.defense);
             DialogueText.text = "The enemy dealt " + (enemyUnit1.attack - target.defense) + " damage";
             yield return new WaitForSeconds(2f);
-
-            //updates the targeted member's health UI
-            playerHUD1.SetHP(playerUnit1.currentHP);
-            playerHUD2.SetHP(playerUnit2.currentHP);
-            playerHUD3.SetHP(playerUnit3.currentHP);
-
-            //checks if all of the party is dead
-            if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0)
-            {
-                state = BattleState.LOST;
-                StartCoroutine(EndBattle());
-            }
-
-            else
-            {
-                //lets the enemy move again if they have remaining turns
-                if (turnsLeft > 0)
-                {
-                    DialogueText.text = "The enemy moves again!";
-                    yield return new WaitForSeconds(2f);
-                    StartCoroutine(EnemyTurn(turnsLeft - 1));
-                }
-                else
-                {
-                    state = BattleState.PLAYERTURN;
-                    StartCoroutine(PlayerTurn());
-                }
-            }
+            UpdatePlayerHealth();
+            StartCoroutine(CheckPartyHP(numTurns));
         }
-
-       
     }
 
     IEnumerator EndBattle()
@@ -808,22 +383,28 @@ public class BattleSystem : MonoBehaviour
         {
             SceneManager.LoadScene("SampleScene");
             DialogueText.text = "You won!";
-            if(battleCount == 2)
-            {
-                enemyImage.sprite = laughing1;
-            }
-            if (battleCount == 3)
-            {
-                enemyImage.sprite = laughing2;
-            }
-            if (battleCount == 4)
-            {
-                enemyImage.sprite = laughing3;
-            }
-            if (battleCount == 5)
-            {
-                enemyImage.sprite = laughing4;
-                battleCount = 1;
+            switch (battleCount){
+                case 2: 
+                {
+                    enemyImage.sprite = laughing1;
+                    break;
+                }
+                case 3:
+                {
+                    enemyImage.sprite = laughing2;
+                    break;
+                }
+                case 4:
+                {
+                    enemyImage.sprite = laughing3;
+                    break;
+                }  
+                case 5:
+                {
+                    enemyImage.sprite = laughing4;
+                    battleCount = 1;
+                    break;
+                }
             }
             yield return new WaitForSeconds(4f);
             StartCoroutine(setupBattle(battleCount));
@@ -839,484 +420,226 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerAttack()
     {
         PartyTurn tempTurn = PartyTurn.NONE;
-        if (turn == PartyTurn.MCTURN)
-        {
-            tempTurn = PartyTurn.MCTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
-            int drainedhp = (int)(playerUnit1.attack * 1.5) - enemyUnit1.defense;
-            if((playerUnit1.currentHP + (int)(drainedhp * 0.2)) > playerUnit1.maxHP)
+        switch (turn){
+            case PartyTurn.MCTURN:
             {
-                playerUnit1.currentHP = playerUnit1.maxHP;
-            }
-            else
-            {
-                playerUnit1.currentHP += (int)(drainedhp * 0.2);
-            }
-            DialogueText.text = "Quincy trampled the enemy with a balloon horse, restoring some HP in the process! " + drainedhp.ToString() + " damage dealt!";
-            playerHUD1.SetHP(playerUnit1.currentHP);
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.SECONDTURN)
-        {
-            tempTurn = PartyTurn.SECONDTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
-            PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
-            if (target.currentHP < target.maxHP)
-            {
-                if ((target.currentHP + 150) > target.maxHP)
+                tempTurn = PartyTurn.MCTURN;
+                turn = PartyTurn.NONE;
+                enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
+                int drainedhp = (int)(playerUnit1.attack * 1.5) - enemyUnit1.defense;
+                if ((playerUnit1.currentHP + (int)(drainedhp * 0.2)) > playerUnit1.maxHP)
                 {
-                    target.currentHP = target.maxHP;
-                    playerHUD1.SetHP(playerUnit1.currentHP);
-                    playerHUD2.SetHP(playerUnit2.currentHP);
-                    playerHUD3.SetHP(playerUnit3.currentHP);
+                    playerUnit1.currentHP = playerUnit1.maxHP;
                 }
                 else
                 {
-                    target.currentHP += 150;
-                    playerHUD1.SetHP(playerUnit1.currentHP);
-                    playerHUD2.SetHP(playerUnit2.currentHP);
-                    playerHUD3.SetHP(playerUnit3.currentHP);
+                    playerUnit1.currentHP += (int)(drainedhp * 0.2);
                 }
-                
+                DialogueText.text = "Quincy trampled the enemy with a balloon horse, restoring some HP in the process! " + drainedhp.ToString() + " damage dealt!";
+                playerHUD1.SetHP(playerUnit1.currentHP);
+                yield return new WaitForSeconds(2f);
+                break;
             }
-
-            DialogueText.text = "Qwynn ran them over with a clown car while delivering healing food to a teammate! " + playerUnit2.attack + " damage dealt!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.THIRDTURN)
-        {
-            tempTurn = PartyTurn.THIRDTURN;
-            turn = PartyTurn.NONE;
-            IncreaseAttack(playerUnit3, 0.4);
-            IncreaseAttack(playerUnit1, 0.4);
-            IncreaseAttack(playerUnit2, 0.4);
-            DialogueText.text = "Quandale attack with made a spear out of balloons, raising everyone's attack in the process!";
-            yield return new WaitForSeconds(2f);
-        }
-
-
-        //checks wether you killed the enemy
-        if (enemyUnit1.currentHP <= 0)
-        {
-            state = BattleState.WON;
-            StartCoroutine(EndBattle());
-        }
-        //determines which member goes next or if it's the enemies turn
-        else
-        {
-            if (tempTurn == PartyTurn.MCTURN)
+            case PartyTurn.SECONDTURN:
             {
-                if (playerUnit2.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
-                }
-                else if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.SECONDTURN)
-            {
-                if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.THIRDTURN)
-            {
-                state = BattleState.ENEMYTURN;
+                tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
-                StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
+                enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
+                PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
+                if (target.currentHP < target.maxHP)
+                {
+                    if ((target.currentHP + 150) > target.maxHP)
+                    {
+                        target.currentHP = target.maxHP;
+                        UpdatePlayerHealth();
+                    }
+                    else
+                    {
+                        target.currentHP += 150;
+                        UpdatePlayerHealth();
+                    }
+                }
+                DialogueText.text = "Qwynn ran them over with a clown car while delivering healing food to a teammate! " + playerUnit2.attack + " damage dealt!";
+                yield return new WaitForSeconds(2f);
+                break;
             }
-
+            case PartyTurn.THIRDTURN:
+            {
+                tempTurn = PartyTurn.THIRDTURN;
+                turn = PartyTurn.NONE;
+                IncreaseAttack(playerUnit3, 0.4);
+                IncreaseAttack(playerUnit1, 0.4);
+                IncreaseAttack(playerUnit2, 0.4);
+                DialogueText.text = "Quandale attack with made a spear out of balloons, raising everyone's attack in the process!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
         }
+        CheckNextTurn(tempTurn);
     }
 
     //Code for skills
     IEnumerator PlayerSkill()
     {
         PartyTurn tempTurn = PartyTurn.NONE;
-        if (turn == PartyTurn.MCTURN)
-        {
-            tempTurn = PartyTurn.MCTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage(playerUnit1.attack * 5 - enemyUnit1.defense);
-            DialogueText.text = "Quincy attacked with a flurry of balloon swords! " + (playerUnit1.attack * 5 - enemyUnit1.defense) + " damage dealt!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.SECONDTURN)
-        {
-            tempTurn = PartyTurn.SECONDTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
-            DialogueText.text = "Qwynn threw a confetti grenade, dealing " + (playerUnit2.attack - enemyUnit1.defense) + " damage and lowering their defense!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.THIRDTURN)
-        {
-            tempTurn = PartyTurn.THIRDTURN;
-            turn = PartyTurn.NONE;
-            if (!(enemyUnit1.attack < enemyUnit1.baseAttack))
+        switch (turn){
+            case PartyTurn.MCTURN:
             {
-                enemyUnit1.attack = (int)(enemyUnit1.attack * 0.8);
-            }
-            DialogueText.text = "Quandale tricked them with a water flower, lowering the enemy's attack!";
-            yield return new WaitForSeconds(2f);
-        }
-        
-        
-        //checks wether you killed the enemy
-        if (enemyUnit1.currentHP <= 0)
-        {
-            state = BattleState.WON;
-            StartCoroutine(EndBattle());
-        }
-        //determines which member goes next or if it's the enemies turn
-        else
-        {
-            if (tempTurn == PartyTurn.MCTURN)
-            {
-                if (playerUnit2.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
-                }
-                else if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.SECONDTURN)
-            {
-                if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.THIRDTURN)
-            {
-                state = BattleState.ENEMYTURN;
+                tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
-                StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
+                enemyUnit1.TakeDamage(playerUnit1.attack * 5 - enemyUnit1.defense);
+                DialogueText.text = "Quincy attacked with a flurry of balloon swords! " + (playerUnit1.attack * 5 - enemyUnit1.defense) + " damage dealt!";
+                yield return new WaitForSeconds(2f);
+                break;
             }
-
+            case PartyTurn.SECONDTURN:
+            {
+                tempTurn = PartyTurn.SECONDTURN;
+                turn = PartyTurn.NONE;
+                enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
+                DialogueText.text = "Qwynn threw a confetti grenade, dealing " + (playerUnit2.attack - enemyUnit1.defense) + " damage and lowering their defense!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
+            case PartyTurn.THIRDTURN:
+            {
+                tempTurn = PartyTurn.THIRDTURN;
+                turn = PartyTurn.NONE;
+                if (!(enemyUnit1.attack < enemyUnit1.baseAttack))
+                {
+                    enemyUnit1.attack = (int)(enemyUnit1.attack * 0.8);
+                }
+                DialogueText.text = "Quandale tricked them with a water flower, lowering the enemy's attack!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
         }
+        CheckNextTurn(tempTurn);
     }
 
     //Code for Actions
     IEnumerator PlayerAction()
     {
         PartyTurn tempTurn = PartyTurn.NONE;
-        if (turn == PartyTurn.MCTURN)
-        {
-            tempTurn = PartyTurn.MCTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
-            ReduceDefense(enemyUnit1, 0.1);
-            DialogueText.text = "Quincy fired a bunch of bubbles, dealing " + ((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense) +  " damage and lowering the enemy's defense!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.SECONDTURN)
-        {
-            tempTurn = PartyTurn.SECONDTURN;
-            turn = PartyTurn.NONE;
-            enemyUnit1.TakeDamage(playerUnit2.attack * 3);
-            DialogueText.text = "Qwynn punched the enemy like they were a boulder, ignoring defense! " + playerUnit2.attack * 3 + " damage dealt!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.THIRDTURN)
-        {
-            tempTurn = PartyTurn.THIRDTURN;
-            turn = PartyTurn.NONE;
-            PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
-            if (target.currentHP < target.maxHP)
+        switch (turn){
+            case PartyTurn.MCTURN:
             {
-                if ((target.currentHP + playerUnit3.attack) > target.maxHP)
-                {
-                    target.currentHP = target.maxHP;
-                    playerHUD1.SetHP(playerUnit1.currentHP);
-                    playerHUD2.SetHP(playerUnit2.currentHP);
-                    playerHUD3.SetHP(playerUnit3.currentHP);
-                }
-                else
-                {
-                    target.currentHP += playerUnit3.attack;
-                    playerHUD1.SetHP(playerUnit1.currentHP);
-                    playerHUD2.SetHP(playerUnit2.currentHP);
-                    playerHUD3.SetHP(playerUnit3.currentHP);
-                }
-                
+                tempTurn = PartyTurn.MCTURN;
+                turn = PartyTurn.NONE;
+                enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
+                ReduceDefense(enemyUnit1, 0.1);
+                DialogueText.text = "Quincy fired a bunch of bubbles, dealing " + ((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense) + " damage and lowering the enemy's defense!";
+                yield return new WaitForSeconds(2f);
+                break;
             }
-            DialogueText.text = "Quandale embarrassed himself with an unfunny joke, healing his teammate!";
-            yield return new WaitForSeconds(2f);
-        }
-
-            //checks wether you killed the enemy
-            if (enemyUnit1.currentHP <= 0)
+            case PartyTurn.SECONDTURN:
             {
-                state = BattleState.WON;
-            StartCoroutine(EndBattle());
-        }
-            //determines which member goes next or if it's the enemies turn
-            else
+                tempTurn = PartyTurn.SECONDTURN;
+                turn = PartyTurn.NONE;
+                enemyUnit1.TakeDamage(playerUnit2.attack * 3);
+                DialogueText.text = "Qwynn punched the enemy like they were a boulder, ignoring defense! " + playerUnit2.attack * 3 + " damage dealt!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
+            case PartyTurn.THIRDTURN:
             {
-                if (tempTurn == PartyTurn.MCTURN)
+                tempTurn = PartyTurn.THIRDTURN;
+                turn = PartyTurn.NONE;
+                PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
+                if (target.currentHP < target.maxHP)
                 {
-                    if (playerUnit2.currentHP > 0)
+                    if ((target.currentHP + playerUnit3.attack) > target.maxHP)
                     {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
-                }
-                else if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.SECONDTURN)
-            {
-                if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                        SpecialText.text = "Final Form";
+                        target.currentHP = target.maxHP;
+                        UpdatePlayerHealth();
+                    }
+                    else
+                    {
+                        target.currentHP += playerUnit3.attack;
+                        UpdatePlayerHealth();
                     }
                 }
-                else if (tempTurn == PartyTurn.THIRDTURN)
-                {
-                    state = BattleState.ENEMYTURN;
-                    turn = PartyTurn.NONE;
-                    StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
-                }
-
+                DialogueText.text = "Quandale embarrassed himself with an unfunny joke, healing his teammate!";
+                yield return new WaitForSeconds(2f);
+                break;
             }
         }
+        CheckNextTurn(tempTurn);
+    }
 
     //Code for Supports
     IEnumerator PlayerSupport()
     {
         PartyTurn tempTurn = PartyTurn.NONE;
-        if (turn == PartyTurn.MCTURN)
-        {
-            tempTurn = PartyTurn.MCTURN;
-            turn = PartyTurn.NONE;
-            
-            DialogueText.text = "MC mewed to raise his confidence, increasing his party's defense!";
-            IncreaseDefense(playerUnit1, 0.2);
-            IncreaseDefense(playerUnit2, 0.2);
-            IncreaseDefense(playerUnit3, 0.2);
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.SECONDTURN)
-        {
-            tempTurn = PartyTurn.SECONDTURN;
-            turn = PartyTurn.NONE;
-            RemoveDebuffs(playerUnit1);
-            RemoveDebuffs(playerUnit2);
-            RemoveDebuffs(playerUnit3);
-            DialogueText.text = "Sec told a refreshing joke, removing all debuffs on the party!";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.THIRDTURN)
-        {
-            tempTurn = PartyTurn.THIRDTURN;
-            turn = PartyTurn.NONE;
-            RemoveBuffs(enemyUnit1);
-            DialogueText.text = "Quandale spolied JJK for the enemy, removing their buffs!";
-            yield return new WaitForSeconds(2f);
-        }
-
-
-        //checks wether you killed the enemy
-        if (enemyUnit1.currentHP <= 0)
-        {
-            state = BattleState.WON;
-            StartCoroutine(EndBattle());
-        }
-        //determines which member goes next or if it's the enemies turn
-        else
-        {
-            if (tempTurn == PartyTurn.MCTURN)
+        switch (turn){
+            case PartyTurn.MCTURN:
             {
-                if (playerUnit2.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
-                }
-                else if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.SECONDTURN)
-            {
-                if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.THIRDTURN)
-            {
-                state = BattleState.ENEMYTURN;
+                tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
-                StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
+                DialogueText.text = "MC mewed to raise his confidence, increasing his party's defense!";
+                IncreaseDefense(playerUnit1, 0.2);
+                IncreaseDefense(playerUnit2, 0.2);
+                IncreaseDefense(playerUnit3, 0.2);
+                yield return new WaitForSeconds(2f);
+                break;
             }
-
+            case PartyTurn.SECONDTURN:
+            {
+                tempTurn = PartyTurn.SECONDTURN;
+                turn = PartyTurn.NONE;
+                RemoveDebuffs(playerUnit1);
+                RemoveDebuffs(playerUnit2);
+                RemoveDebuffs(playerUnit3);
+                DialogueText.text = "Sec told a refreshing joke, removing all debuffs on the party!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
+            case PartyTurn.THIRDTURN:
+            {
+                tempTurn = PartyTurn.THIRDTURN;
+                turn = PartyTurn.NONE;
+                RemoveBuffs(enemyUnit1);
+                DialogueText.text = "Quandale spolied JJK for the enemy, removing their buffs!";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
         }
+        CheckNextTurn(tempTurn);
     }
 
     //Code for skills
     IEnumerator PlayerSpecial()
     {
         PartyTurn tempTurn = PartyTurn.NONE;
-        if (turn == PartyTurn.MCTURN)
-        {
-            tempTurn = PartyTurn.MCTURN;
-            turn = PartyTurn.NONE;
-            playerUnit1.currentHP = 1;
-            playerHUD1.SetHP(playerUnit1.currentHP);
-            DialogueText.text = "Quincy sacrificed his own HP because he thought it was funny! Why would you use this move?";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.SECONDTURN)
-        {
-            tempTurn = PartyTurn.SECONDTURN;
-            turn = PartyTurn.NONE;
-            
-            DialogueText.text = "Qwynn did nothing! Thanks for nothing Qwynn! Love u <3";
-            yield return new WaitForSeconds(2f);
-        }
-        else if (turn == PartyTurn.THIRDTURN)
-        {
-            tempTurn = PartyTurn.THIRDTURN;
-            turn = PartyTurn.NONE;
-            
-            DialogueText.text = "We don't talk about Quandale... let's just skip his turn...";
-            yield return new WaitForSeconds(2f);
-        }
-
-
-        //checks wether you killed the enemy
-        if (enemyUnit1.currentHP <= 0)
-        {
-            state = BattleState.WON;
-            StartCoroutine(EndBattle());
-        }
-        //determines which member goes next or if it's the enemies turn
-        else
-        {
-            if (tempTurn == PartyTurn.MCTURN)
+        switch (turn){
+            case PartyTurn.MCTURN:
             {
-                if (playerUnit2.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
-                }
-                else if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.SECONDTURN)
-            {
-                if (playerUnit3.currentHP > 0)
-                {
-                    state = BattleState.PLAYERTURN;
-                    turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
-                }
-            }
-            else if (tempTurn == PartyTurn.THIRDTURN)
-            {
-                state = BattleState.ENEMYTURN;
+                tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
-                StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
+                playerUnit1.currentHP = 1;
+                playerHUD1.SetHP(playerUnit1.currentHP);
+                DialogueText.text = "Quincy sacrificed his own HP because he thought it was funny! Why would you use this move?";
+                yield return new WaitForSeconds(2f);
+                break;
             }
-
+            case PartyTurn.SECONDTURN:
+            {
+                tempTurn = PartyTurn.SECONDTURN;
+                turn = PartyTurn.NONE;
+                DialogueText.text = "Qwynn did nothing! Thanks for nothing Qwynn! Love u <3";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
+            case PartyTurn.THIRDTURN:
+            {
+                tempTurn = PartyTurn.THIRDTURN;
+                turn = PartyTurn.NONE;
+                DialogueText.text = "We don't talk about Quandale... let's just skip his turn...";
+                yield return new WaitForSeconds(2f);
+                break;
+            }
         }
+        CheckNextTurn(tempTurn);
     }
 
     //Peforms the attack function
@@ -1424,75 +747,41 @@ public class BattleSystem : MonoBehaviour
     {
         if (p1.currentHP < p2.currentHP && p1.currentHP < playerUnit3.currentHP)
         {
-            if(p1.currentHP > 0)
-            {
-                return p1;
-            }
+            if(p1.currentHP > 0)    {return p1;}
+
             else if(p2.currentHP < p3.currentHP)
             {
-                if(p2.currentHP > 0)
-                {
-                    return p2;
-                }
-                else
-                {
-                    return p3;
-                }
+                if(p2.currentHP > 0)    {return p2;}
+
+                else    {return p3;}
             }
-            else
-            {
-                return p1;
-            }
-            
+            else    {return p1;}
         }
         else if (p2.currentHP < p1.currentHP && p2.currentHP < p3.currentHP)
         {
-            if (p2.currentHP > 0)
-            {
-                return p2;
-            }
+            if (p2.currentHP > 0)   {return p2;}
+
             else if (p1.currentHP < p3.currentHP)
             {
-                if (p1.currentHP > 0)
-                {
-                    return p1;
-                }
-                else
-                {
-                    return p3;
-                }
+                if (p1.currentHP > 0)   {return p1;}
+
+                else    {return p3;}
             }
-            else
-            {
-                return p1;
-            }
+            else    {return p1;}
         }
         else if (p3.currentHP < p2.currentHP && p3.currentHP < p1.currentHP)
         {
-            if (p3.currentHP > 0)
-            {
-                return p3;
-            }
+            if (p3.currentHP > 0)   {return p3;}
+
             else if (p1.currentHP < p2.currentHP)
             {
-                if (p1.currentHP > 0)
-                {
-                    return p1;
-                }
-                else
-                {
-                    return p2;
-                }
+                if (p1.currentHP > 0)   {return p1;}
+
+                else    {return p2;}
             }
-            else
-            {
-                return p1;
-            }
+            else    {return p1;}
         }
-        else
-        {
-            return p1;
-        }
+        else    {return p1;}
     }
 
     //enemy chooses which player to target
@@ -1561,26 +850,103 @@ public class BattleSystem : MonoBehaviour
 
     public void RemoveDebuffs(PlayerScript target)
     {
-        if(target.attack < target.baseAttack)
-        {
-            target.attack = target.baseAttack;
-        }
-        if (target.defense < target.baseDefense)
-        {
-            target.defense = target.baseDefense;
-        }
+        target.attack = target.baseAttack;
+        target.defense = target.baseDefense;
     }
 
     public void RemoveBuffs(PlayerScript target)
     {
-        if (target.attack > target.baseAttack)
+        target.attack = target.baseAttack;
+        target.defense = target.baseDefense;
+    }
+
+    //Checks who's turn is next (Player or enemy)
+    public void CheckNextTurn(PartyTurn tempTurn){
+        
+        //checks wether you killed the enemy
+        if (enemyUnit1.currentHP <= 0)
         {
-            target.attack = target.baseAttack;
+            state = BattleState.WON;
+            StartCoroutine(EndBattle());
         }
-        if (target.defense > target.baseDefense)
+        
+        //determines which member goes next or if it's the enemies turn
+        else
         {
-            target.defense = target.baseDefense;
+            if (tempTurn == PartyTurn.MCTURN)
+            {
+                if (playerUnit2.currentHP > 0)
+                {
+                    state = BattleState.PLAYERTURN;
+                    turn = PartyTurn.SECONDTURN;
+                    DialogueText.text = "Qwynn moves!";
+                    SkillText.text = "Confetti Grenade";
+                    ActionText.text = "Resident Funny";
+                    SupportText.text = "Refreshing Joke";
+                    SpecialText.text = "Nah, I'd Win";
+                }
+                else if (playerUnit3.currentHP > 0)
+                {
+                    state = BattleState.PLAYERTURN;
+                    turn = PartyTurn.THIRDTURN;
+                    DialogueText.text = "Quandale moves!";
+                    SkillText.text = "Water Flower";
+                    ActionText.text = "Tragic Display";
+                    SupportText.text = "Manga Spoiler";
+                    SpecialText.text = "Final Form";
+                }
+            }
+            else if (tempTurn == PartyTurn.SECONDTURN)
+            {
+                if (playerUnit3.currentHP > 0)
+                {
+                    state = BattleState.PLAYERTURN;
+                    turn = PartyTurn.THIRDTURN;
+                    DialogueText.text = "Quandale moves!";
+                    SkillText.text = "Water Flower";
+                    ActionText.text = "Tragic Display";
+                    SupportText.text = "Manga Spoiler";
+                    SpecialText.text = "Final Form";
+                }
+            }
+            else if (tempTurn == PartyTurn.THIRDTURN)
+            {
+                state = BattleState.ENEMYTURN;
+                turn = PartyTurn.NONE;
+                StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
+            }
+
+        }
+    }
+
+    //Updates player HUD with new player health
+    public void UpdatePlayerHealth(){
+        playerHUD1.SetHP(playerUnit1.currentHP);
+        playerHUD2.SetHP(playerUnit2.currentHP);
+        playerHUD3.SetHP(playerUnit3.currentHP);
+    }
+
+    //Checks if all party members are dead
+    IEnumerator CheckPartyHP(int turnsleft){
+        int turns = turnsleft;
+        if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0){
+            state = BattleState.LOST;
+            StartCoroutine(EndBattle());
+        }
+        else
+        {
+            //lets the enemy move again if they have remaining turns
+            if (turns > 0)
+            {
+                DialogueText.text = "The enemy moves again!";
+                yield return new WaitForSeconds(2f);
+                StartCoroutine(EnemyTurn(turns-1));
+            }
+            else
+            {
+                state = BattleState.PLAYERTURN;
+                StartCoroutine(PlayerTurn());
+            }
         }
     }
 }
-

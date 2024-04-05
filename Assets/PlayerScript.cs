@@ -12,8 +12,6 @@ public class PlayerScript : MonoBehaviour
     public int baseDefense;
     public string name;
     public int maxHP;
-    public int currentMP;
-    public int maxMP;
     public int enemyTurnCount;
 
 
@@ -21,7 +19,7 @@ public class PlayerScript : MonoBehaviour
     {
         if(damage < 0)
         {
-            currentHP = currentHP;
+            currentHP +=0;
         }
         else if(currentHP - damage < 0)
         {
@@ -29,7 +27,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            currentHP = currentHP - damage;
+            currentHP -= damage;
         }
         
     }
