@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    // Start is called before the first frame update
     public int currentHP;
     public int attack;
     public int baseAttack;
@@ -13,7 +12,6 @@ public class PlayerScript : MonoBehaviour
     public string name;
     public int maxHP;
     public int enemyTurnCount;
-
 
     public void TakeDamage(int damage)
     {
@@ -29,7 +27,6 @@ public class PlayerScript : MonoBehaviour
         {
             currentHP -= damage;
         }
-
     }
 }
 

@@ -19,7 +19,6 @@ public class BattleHUD : MonoBehaviour
 
     public void SetHP(int hp)
     {
-        
         currentHP.text = hp.ToString();
     }
 
