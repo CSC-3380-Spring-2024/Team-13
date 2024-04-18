@@ -9,7 +9,7 @@ public class PlayerScript : MonoBehaviour
     public int baseAttack;
     public int defense;
     public int baseDefense;
-    public string name;
+    public new string name;
     public int maxHP;
     public int enemyTurnCount;
 

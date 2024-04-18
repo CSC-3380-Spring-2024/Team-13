@@ -1,26 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleHUD : MonoBehaviour
 {
-    public Text nameText;
-    public Text currentHP;
-    public Text maxHP;
-    public Sprite enemySprite;
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI currentHp;
+    public TextMeshProUGUI maxHp;
 
-    public void SetHUD(PlayerScript combatant)
+    public Image healthBar;
+
+    public void SetHUD(PlayerScript combatant,float lerp)
     {
         nameText.text = combatant.name;
-        currentHP.text = combatant.currentHP.ToString();
-        maxHP.text = combatant.maxHP.ToString();
+        currentHp.text = combatant.currentHP.ToString();
+        maxHp.text = combatant.maxHP.ToString();
+        
+        //Sets the healthbar to full
+        healthBar.fillAmount = 0;
+        healthBar.fillAmount = Mathf.Lerp(0,1,lerp);
     }
 
-    public void SetHP(int hp)
+    public void SetHP(PlayerScript entity,float lerp)
     {
-        currentHP.text = hp.ToString();
+        //Sets the CHP text for each player/enemy
+        currentHp.text = entity.currentHP.ToString();
+
+        //Controls the healthbar decay
+        healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount,(float)entity.currentHP/entity.maxHP,lerp);
     }
-
-
 }
