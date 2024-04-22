@@ -28,6 +28,7 @@ public class BattleSystem : MonoBehaviour
     public BattleHUD playerHUD1;
     public BattleHUD playerHUD2;
     public BattleHUD playerHUD3;
+    public BattleHUD enemyHUD1;
 
     //refrences the Background image;
     public Image background;
@@ -59,6 +60,9 @@ public class BattleSystem : MonoBehaviour
     public Transform enemyBattleStation2;
     public Transform enemyBattleStation3;
 
+    //Used for healthbar decay
+    float lerpSpeed;
+
 
     void Start()
     {
@@ -66,6 +70,13 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.START;
         StartCoroutine(setupBattle(battleCount)); 
     }
+
+    void Update()
+    {
+      UpdatePlayerHealth();
+      lerpSpeed = 3f * Time.deltaTime;
+    }
+
 
     IEnumerator setupBattle(int battleNum)
     {
@@ -115,10 +126,11 @@ public class BattleSystem : MonoBehaviour
         }
 
         DialogueText.text = "You were attacked by " + enemyUnit1.name + "!";
-        playerHUD1.SetHUD(playerUnit1);
-        playerHUD2.SetHUD(playerUnit2);
-        playerHUD3.SetHUD(playerUnit3);
-        yield return new WaitForSeconds(2f);
+        playerHUD1.SetHUD(playerUnit1,lerpSpeed-2);
+        playerHUD2.SetHUD(playerUnit2,lerpSpeed-2);
+        playerHUD3.SetHUD(playerUnit3,lerpSpeed-2);
+        enemyHUD1.SetHUD(enemyUnit1,lerpSpeed-2);
+        yield return new WaitForSeconds(3f);
 
         state = BattleState.PLAYERTURN;
         turn = PartyTurn.NONE;
@@ -128,7 +140,7 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerTurn()
     {
         DialogueText.text = "It's your turn!";
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         turn = PartyTurn.NONE;
 
         //determines which party member will act first, they get no turn if hp < 0
@@ -177,23 +189,20 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         var random = new System.Random();
         int rand = random.Next(0, 14);
-        int numTurns=turnsLeft;
-        
-        //Testing damage of enemy attack
 
-        //PlayerScript targett = enemyTarget();
-        //targett.TakeDamage(targett.currentHP);
-        //UpdatePlayerHealth();
-        //StartCoroutine(CheckPartyHP(numTurns));
+        //Test 
+        //rand=3;
+        
+        int numTurns=turnsLeft;
 
         if (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense)
         {
             if(rand <= 2)
             {
+                //removes debuffs from enemy
                 RemoveDebuffs(enemyUnit1);
                 DialogueText.text = "The enemy removed all debuffs on themself!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
 
             }
@@ -205,11 +214,11 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
+                //debuffs all players
                 enemyUnit1.currentHP += 200;
                 ReduceAttack(playerUnit1, 0.2);
                 ReduceAttack(playerUnit2, 0.2);
@@ -219,26 +228,25 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
 
             }
             else if(rand >= 8 || rand <= 10)
             {
+                //attacks one player
                 PlayerScript target = enemyTarget();
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
+                //buffs enemy
                 IncreaseAttack(enemyUnit1, 0.4);
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
         }
@@ -247,12 +255,12 @@ public class BattleSystem : MonoBehaviour
         {
             if (rand <= 2)
             {
+                //removes buffs from all players
                 RemoveBuffs(playerUnit1);
                 RemoveBuffs(playerUnit2);
                 RemoveBuffs(playerUnit3);
                 DialogueText.text = "The enemy removed all of your buffs!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 2 && rand < 5)
@@ -263,11 +271,11 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
+                //debuffs all players
                 enemyUnit1.currentHP += 200;
                 ReduceAttack(playerUnit1, 0.2);
                 ReduceAttack(playerUnit2, 0.2);
@@ -277,25 +285,24 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 8 || rand <= 10)
             {
+                //attacks one player
                 PlayerScript target = enemyTarget();
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
+                //buffs enemy
                 IncreaseAttack(enemyUnit1, 0.4);
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
         }
@@ -304,20 +311,20 @@ public class BattleSystem : MonoBehaviour
         {
             if (rand == 1)
             {
+                //removes buffs from all players
                 RemoveBuffs(playerUnit1);
                 RemoveBuffs(playerUnit2);
                 RemoveBuffs(playerUnit3);
                 DialogueText.text = "The enemy removed all of your buffs!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand == 2)
             {
+                //removes debuffs from enemy
                 RemoveDebuffs(enemyUnit1);
                 DialogueText.text = "The enemy removed all debuffs on themself!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 2 && rand < 5)
@@ -328,11 +335,11 @@ public class BattleSystem : MonoBehaviour
                 playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
                 DialogueText.text = "The enemy attacked everyone!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 5 && rand < 8)
             {
+                //debuffs all players
                 enemyUnit1.currentHP += 200;
                 ReduceAttack(playerUnit1, 0.2);
                 ReduceAttack(playerUnit2, 0.2);
@@ -342,36 +349,34 @@ public class BattleSystem : MonoBehaviour
                 ReduceDefense(playerUnit3, 0.2);
                 DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand >= 8 || rand <= 10)
             {
+                //attacks one player
                 PlayerScript target = enemyTarget();
                 target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
                 DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
             else if (rand > 10)
             {
+                //buffs enemy
                 IncreaseAttack(enemyUnit1, 0.4);
                 IncreaseDefense(enemyUnit1, 0.4);
                 DialogueText.text = "The enemy increased their attack and defense!";
                 yield return new WaitForSeconds(2f);
-                UpdatePlayerHealth();
                 StartCoroutine(CheckPartyHP(numTurns));
             }
         }
-        //the enemy does a basic attack
         else
         {
+            //the enemy does a basic attack
             PlayerScript target = enemyTarget();
             target.TakeDamage(enemyUnit1.attack - target.defense);
             DialogueText.text = "The enemy dealt " + (enemyUnit1.attack - target.defense) + " damage";
             yield return new WaitForSeconds(2f);
-            UpdatePlayerHealth();
             StartCoroutine(CheckPartyHP(numTurns));
         }
     }
@@ -381,8 +386,10 @@ public class BattleSystem : MonoBehaviour
         battleCount++;
         if(state == BattleState.WON)
         {
-            SceneManager.LoadScene("SampleScene");
             DialogueText.text = "You won!";
+            yield return new WaitForSeconds(2f);
+            
+            
             switch (battleCount){
                 case 2: 
                 {
@@ -406,9 +413,8 @@ public class BattleSystem : MonoBehaviour
                     break;
                 }
             }
-            yield return new WaitForSeconds(4f);
-            StartCoroutine(setupBattle(battleCount));
-            
+            yield return new WaitForSeconds(2f);
+            SceneManager.LoadScene("SampleScene");
         }
         else if(state == BattleState.LOST)
         {
@@ -423,6 +429,8 @@ public class BattleSystem : MonoBehaviour
         switch (turn){
             case PartyTurn.MCTURN:
             {
+                //Lifesteal attack
+
                 tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
@@ -436,12 +444,13 @@ public class BattleSystem : MonoBehaviour
                     playerUnit1.currentHP += (int)(drainedhp * 0.2);
                 }
                 DialogueText.text = "Quincy trampled the enemy with a balloon horse, restoring some HP in the process! " + drainedhp.ToString() + " damage dealt!";
-                playerHUD1.SetHP(playerUnit1.currentHP);
                 yield return new WaitForSeconds(2f);
                 break;
             }
             case PartyTurn.SECONDTURN:
             {
+                //Team heal + attack
+
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
@@ -451,12 +460,10 @@ public class BattleSystem : MonoBehaviour
                     if ((target.currentHP + 150) > target.maxHP)
                     {
                         target.currentHP = target.maxHP;
-                        UpdatePlayerHealth();
                     }
                     else
                     {
                         target.currentHP += 150;
-                        UpdatePlayerHealth();
                     }
                 }
                 DialogueText.text = "Qwynn ran them over with a clown car while delivering healing food to a teammate! " + playerUnit2.attack + " damage dealt!";
@@ -465,6 +472,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.THIRDTURN:
             {
+                //Buff team
+
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
                 IncreaseAttack(playerUnit3, 0.4);
@@ -485,6 +494,8 @@ public class BattleSystem : MonoBehaviour
         switch (turn){
             case PartyTurn.MCTURN:
             {
+                //Deal mega damage with balloon swords
+
                 tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage(playerUnit1.attack * 5 - enemyUnit1.defense);
@@ -494,6 +505,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.SECONDTURN:
             {
+                //Deal damage with grenade
+
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage(playerUnit2.attack - enemyUnit1.defense);
@@ -503,6 +516,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.THIRDTURN:
             {
+                //Debuff enemy
+
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
                 if (!(enemyUnit1.attack < enemyUnit1.baseAttack))
@@ -524,6 +539,8 @@ public class BattleSystem : MonoBehaviour
         switch (turn){
             case PartyTurn.MCTURN:
             {
+                //Deal damage with bubbles
+
                 tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage((int)(playerUnit1.attack * 1.5) - enemyUnit1.defense);
@@ -534,6 +551,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.SECONDTURN:
             {
+                //Attack through enemy defense
+
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
                 enemyUnit1.TakeDamage(playerUnit2.attack * 3);
@@ -543,6 +562,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.THIRDTURN:
             {
+                //Heal lowest teammate
+
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
                 PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
@@ -551,12 +572,10 @@ public class BattleSystem : MonoBehaviour
                     if ((target.currentHP + playerUnit3.attack) > target.maxHP)
                     {
                         target.currentHP = target.maxHP;
-                        UpdatePlayerHealth();
                     }
                     else
                     {
                         target.currentHP += playerUnit3.attack;
-                        UpdatePlayerHealth();
                     }
                 }
                 DialogueText.text = "Quandale embarrassed himself with an unfunny joke, healing his teammate!";
@@ -574,9 +593,11 @@ public class BattleSystem : MonoBehaviour
         switch (turn){
             case PartyTurn.MCTURN:
             {
+                //Increase team defense
+
                 tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
-                DialogueText.text = "MC mewed to raise his confidence, increasing his party's defense!";
+                DialogueText.text = "Quincy mewed to raise his confidence, increasing his party's defense!";
                 IncreaseDefense(playerUnit1, 0.2);
                 IncreaseDefense(playerUnit2, 0.2);
                 IncreaseDefense(playerUnit3, 0.2);
@@ -585,17 +606,21 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.SECONDTURN:
             {
+                //Remove team debuffs
+
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
                 RemoveDebuffs(playerUnit1);
                 RemoveDebuffs(playerUnit2);
                 RemoveDebuffs(playerUnit3);
-                DialogueText.text = "Sec told a refreshing joke, removing all debuffs on the party!";
+                DialogueText.text = "Qwynn told a refreshing joke, removing all debuffs on the party!";
                 yield return new WaitForSeconds(2f);
                 break;
             }
             case PartyTurn.THIRDTURN:
             {
+                //Remove enemy buffs
+
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
                 RemoveBuffs(enemyUnit1);
@@ -614,16 +639,19 @@ public class BattleSystem : MonoBehaviour
         switch (turn){
             case PartyTurn.MCTURN:
             {
+                //Self-attack
+
                 tempTurn = PartyTurn.MCTURN;
                 turn = PartyTurn.NONE;
                 playerUnit1.currentHP = 1;
-                playerHUD1.SetHP(playerUnit1.currentHP);
                 DialogueText.text = "Quincy sacrificed his own HP because he thought it was funny! Why would you use this move?";
                 yield return new WaitForSeconds(2f);
                 break;
             }
             case PartyTurn.SECONDTURN:
             {
+                //Bluff the enemy
+
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
                 DialogueText.text = "Qwynn did nothing! Thanks for nothing Qwynn! Love u <3";
@@ -632,6 +660,8 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.THIRDTURN:
             {
+                //Self-embarrassment
+
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
                 DialogueText.text = "We don't talk about Quandale... let's just skip his turn...";
@@ -805,6 +835,7 @@ public class BattleSystem : MonoBehaviour
         var random = new System.Random();
         int targetnum = random.Next(0, partymems.Count);
         PlayerScript target = partymems[targetnum];
+        partymems.Clear();
         return target;
     }
 
@@ -921,10 +952,11 @@ public class BattleSystem : MonoBehaviour
 
     //Updates player HUD with new player health
     public void UpdatePlayerHealth(){
-        playerHUD1.SetHP(playerUnit1.currentHP);
-        playerHUD2.SetHP(playerUnit2.currentHP);
-        playerHUD3.SetHP(playerUnit3.currentHP);
-    }
+        playerHUD1.SetHP(playerUnit1, lerpSpeed);
+        playerHUD2.SetHP(playerUnit2, lerpSpeed);
+        playerHUD3.SetHP(playerUnit3, lerpSpeed);
+        enemyHUD1.SetHP(enemyUnit1, lerpSpeed);
+    }  
 
     //Checks if all party members are dead
     IEnumerator CheckPartyHP(int turnsleft){
@@ -938,6 +970,7 @@ public class BattleSystem : MonoBehaviour
             //lets the enemy move again if they have remaining turns
             if (turns > 0)
             {
+                yield return new WaitForSeconds(2f);
                 DialogueText.text = "The enemy moves again!";
                 yield return new WaitForSeconds(2f);
                 StartCoroutine(EnemyTurn(turns-1));
