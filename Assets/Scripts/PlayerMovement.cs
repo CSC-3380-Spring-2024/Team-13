@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public Rigidbody2D rb;
-    public double battlechance = 1;
+    public double battlechance = 0;
     
 
     Vector2 movement;
