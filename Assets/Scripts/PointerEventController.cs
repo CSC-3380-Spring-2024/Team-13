@@ -9,21 +9,23 @@ using UnityEngine.UIElements;
 
 public class PointerEventController : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler
 {
-    public string temptext ="";
     public TextMeshProUGUI Buttontext;
-    public string alternatetext;
-    //public GameObject Label;
+    public TextMeshProUGUI alternatetext;
+
+    void Start(){
+        Buttontext.enabled=true;
+        alternatetext.enabled=false;
+    }
 
     public void OnPointerEnter(PointerEventData data)
     {
-        temptext= Buttontext.text;
-        Buttontext.text = alternatetext;
-        //Label.SetActive(true);
+        Buttontext.enabled=false;
+        alternatetext.enabled=true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Buttontext.text = temptext;
-        //Label.SetActive(false);
+        Buttontext.enabled=true;
+        alternatetext.enabled=false;
     }
 }
