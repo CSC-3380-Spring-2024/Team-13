@@ -6,33 +6,30 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public Rigidbody2D rb;
-    public double battlechance = 0;
-    
+    private Rigidbody2D rb;
+    private Animator animator;
+    private Vector2 movement;
 
-    Vector2 movement;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+    }
+
     // Update is called once per frame
     void Update()
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
+        animator.SetFloat("Horizontal", movement.x);
+        animator.SetFloat("Vertical", movement.y);
+        animator.SetFloat("Speed", movement.sqrMagnitude);
     }
 
     void FixedUpdate()
     {
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
-        if(movement.x != 0 || movement.y != 0)
-        {
-            var randint = Random.Range(1, 100);
-            if(randint <= battlechance && randint > 0)
-            {
-                battlechance = .75;
-                SceneManager.LoadScene("BattleScene");
-            }
-            else
-            {
-                battlechance += 0.001;
-            }
-        }
     }
 }
