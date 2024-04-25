@@ -183,196 +183,197 @@ public class BattleSystem : MonoBehaviour
         DialogueText.text = "It's the enemy's turn!";
         yield return new WaitForSeconds(2f);
         var random = new System.Random();
-        int rand = random.Next(0, 14);
+        int rand = random.Next(0, 5);
 
         //Test 
         //rand=3;
         
         int numTurns=turnsLeft;
 
+        //If enemy is debuffed
         if (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense)
         {
-            if(rand <= 2)
-            {
-                //removes debuffs from enemy
-                RemoveDebuffs(enemyUnit1);
-                DialogueText.text = "The enemy removed all debuffs on themself!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-
-            }
-            else if(rand > 2 && rand < 5)
-            {
-                //attacks all
-                playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
-                playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
-                playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
-                DialogueText.text = "The enemy attacked everyone!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand >= 5 && rand < 8)
-            {
-                //debuffs all players
-                enemyUnit1.currentHP += 200;
-                ReduceAttack(playerUnit1, 0.2);
-                ReduceAttack(playerUnit2, 0.2);
-                ReduceAttack(playerUnit3, 0.2);
-                ReduceDefense(playerUnit1, 0.2);
-                ReduceDefense(playerUnit2, 0.2);
-                ReduceDefense(playerUnit3, 0.2);
-                DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-
-            }
-            else if(rand >= 8 || rand <= 10)
-            {
-                //attacks one player
-                PlayerScript target = enemyTarget();
-                target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
-                DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand > 10)
-            {
-                //buffs enemy
-                IncreaseAttack(enemyUnit1, 0.4);
-                IncreaseDefense(enemyUnit1, 0.4);
-                DialogueText.text = "The enemy increased their attack and defense!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-        }
-        
-        else if (((playerUnit1.attack > playerUnit1.baseAttack) || (playerUnit1.attack > playerUnit3.baseAttack) || (playerUnit3.attack > playerUnit3.baseAttack) || (playerUnit1.defense > playerUnit1.baseDefense) || (playerUnit2.defense > playerUnit2.baseDefense) || (playerUnit1.defense > playerUnit1.baseDefense)) && !(enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense))
-        {
-            if (rand <= 2)
-            {
-                //removes buffs from all players
-                RemoveBuffs(playerUnit1);
-                RemoveBuffs(playerUnit2);
-                RemoveBuffs(playerUnit3);
-                DialogueText.text = "The enemy removed all of your buffs!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand > 2 && rand < 5)
-            {
-                //attacks all
-                playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
-                playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
-                playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
-                DialogueText.text = "The enemy attacked everyone!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand >= 5 && rand < 8)
-            {
-                //debuffs all players
-                enemyUnit1.currentHP += 200;
-                ReduceAttack(playerUnit1, 0.2);
-                ReduceAttack(playerUnit2, 0.2);
-                ReduceAttack(playerUnit3, 0.2);
-                ReduceDefense(playerUnit1, 0.2);
-                ReduceDefense(playerUnit2, 0.2);
-                ReduceDefense(playerUnit3, 0.2);
-                DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand >= 8 || rand <= 10)
-            {
-                //attacks one player
-                PlayerScript target = enemyTarget();
-                target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
-                DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand > 10)
-            {
-                //buffs enemy
-                IncreaseAttack(enemyUnit1, 0.4);
-                IncreaseDefense(enemyUnit1, 0.4);
-                DialogueText.text = "The enemy increased their attack and defense!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
+            switch (rand){
+                case 0:
+                {
+                   //removes debuffs from enemy and heals enemy
+                    enemyUnit1.currentHP += 200;
+                    RemoveDebuffs(enemyUnit1);
+                    DialogueText.text = "The enemy removed all debuffs on themself and healed!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 1:
+                {
+                    //attacks all
+                    playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
+                    playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
+                    playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
+                    DialogueText.text = "The enemy attacked everyone!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 2:
+                {
+                    //heals one player
+                    PlayerScript target = enemyTarget();
+                    target.currentHP +=150;
+                    DialogueText.text = "The enemy healed a player for " + "150" + "HP";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 3:
+                {
+                    //attacks one player
+                    PlayerScript target = enemyTarget();
+                    target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
+                    DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage to" + target.name;
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 4:
+                {
+                    //removes enemy debuffs and buffs enemy
+                    RemoveDebuffs(enemyUnit1);
+                    IncreaseAttack(enemyUnit1, 0.4);
+                    IncreaseDefense(enemyUnit1, 0.4);
+                    DialogueText.text = "The enemy removed all debuffs and increased their attack and defense!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 5:
+                {
+                    //if any player is buffed
+                    if (((playerUnit1.attack > playerUnit1.baseAttack) || (playerUnit2.attack > playerUnit2.baseAttack) || (playerUnit3.attack > playerUnit3.baseAttack) || (playerUnit1.defense > playerUnit1.baseDefense) || (playerUnit2.defense > playerUnit2.baseDefense) || (playerUnit3.defense > playerUnit3.baseDefense)) && (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense))
+                    { 
+                        //removes buffs from all players
+                        RemoveBuffs(playerUnit1);
+                        RemoveBuffs(playerUnit2);
+                        RemoveBuffs(playerUnit3);
+                        DialogueText.text = "The enemy removed all of your buffs!";
+                        yield return new WaitForSeconds(2f);
+                        StartCoroutine(CheckPartyHP(numTurns));
+                        break;
+                    }
+                    else
+                    {
+                        //brutally attacks one player
+                        PlayerScript target = enemyTarget();
+                        target.TakeDamage(enemyUnit1.attack*4 - target.defense);
+                        DialogueText.text = "The enemy dealt a whopping" + (enemyUnit1.attack - target.defense) + " damage";
+                        yield return new WaitForSeconds(2f);
+                        StartCoroutine(CheckPartyHP(numTurns));
+                        break;
+                    }
+                }
             }
         }
         
-        else if (((playerUnit1.attack > playerUnit1.baseAttack) || (playerUnit1.attack > playerUnit3.baseAttack) || (playerUnit3.attack > playerUnit3.baseAttack) || (playerUnit1.defense > playerUnit1.baseDefense) || (playerUnit2.defense > playerUnit2.baseDefense) || (playerUnit1.defense > playerUnit1.baseDefense)) && (enemyUnit1.attack < enemyUnit1.baseAttack || enemyUnit1.defense < enemyUnit1.baseDefense))
+        //If any player is buffed
+        else if ((playerUnit1.attack > playerUnit1.baseAttack) || (playerUnit2.attack > playerUnit2.baseAttack) || (playerUnit3.attack > playerUnit3.baseAttack) || (playerUnit1.defense > playerUnit1.baseDefense) || (playerUnit2.defense > playerUnit2.baseDefense) || (playerUnit3.defense > playerUnit3.baseDefense))
         {
-            if (rand == 1)
+            switch (rand)
             {
-                //removes buffs from all players
-                RemoveBuffs(playerUnit1);
-                RemoveBuffs(playerUnit2);
-                RemoveBuffs(playerUnit3);
-                DialogueText.text = "The enemy removed all of your buffs!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand == 2)
-            {
-                //removes debuffs from enemy
-                RemoveDebuffs(enemyUnit1);
-                DialogueText.text = "The enemy removed all debuffs on themself!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand > 2 && rand < 5)
-            {
-                //attacks all
-                playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
-                playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
-                playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
-                DialogueText.text = "The enemy attacked everyone!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand >= 5 && rand < 8)
-            {
-                //debuffs all players
-                enemyUnit1.currentHP += 200;
-                ReduceAttack(playerUnit1, 0.2);
-                ReduceAttack(playerUnit2, 0.2);
-                ReduceAttack(playerUnit3, 0.2);
-                ReduceDefense(playerUnit1, 0.2);
-                ReduceDefense(playerUnit2, 0.2);
-                ReduceDefense(playerUnit3, 0.2);
-                DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand >= 8 || rand <= 10)
-            {
-                //attacks one player
-                PlayerScript target = enemyTarget();
-                target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
-                DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
-            }
-            else if (rand > 10)
-            {
-                //buffs enemy
-                IncreaseAttack(enemyUnit1, 0.4);
-                IncreaseDefense(enemyUnit1, 0.4);
-                DialogueText.text = "The enemy increased their attack and defense!";
-                yield return new WaitForSeconds(2f);
-                StartCoroutine(CheckPartyHP(numTurns));
+                case 0: case 3:
+                {
+                    //removes buffs from all players
+                    RemoveBuffs(playerUnit1);
+                    RemoveBuffs(playerUnit2);
+                    RemoveBuffs(playerUnit3);
+                    DialogueText.text = "The enemy removed all of your buffs!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 1:
+                {
+                    //attacks all
+                    playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
+                    playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
+                    playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
+                    DialogueText.text = "The enemy attacked everyone!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 2:
+                {
+                    //debuffs all players
+                    enemyUnit1.currentHP += 200;
+                    ReduceAttack(playerUnit1, 0.2);
+                    ReduceAttack(playerUnit2, 0.2);
+                    ReduceAttack(playerUnit3, 0.2);
+                    ReduceDefense(playerUnit1, 0.2);
+                    ReduceDefense(playerUnit2, 0.2);
+                    ReduceDefense(playerUnit3, 0.2);
+                    DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
+                case 4 :case 5:
+                {
+                    //buffs enemy
+                    IncreaseAttack(enemyUnit1, 0.4);
+                    IncreaseDefense(enemyUnit1, 0.4);
+                    DialogueText.text = "The enemy increased their attack and defense!";
+                    yield return new WaitForSeconds(2f);
+                    StartCoroutine(CheckPartyHP(numTurns));
+                    break;
+                }
             }
         }
         else
         {
-            //the enemy does a basic attack
-            PlayerScript target = enemyTarget();
-            target.TakeDamage(enemyUnit1.attack - target.defense);
-            DialogueText.text = "The enemy dealt " + (enemyUnit1.attack - target.defense) + " damage";
-            yield return new WaitForSeconds(2f);
-            StartCoroutine(CheckPartyHP(numTurns));
+            switch (rand)
+            {
+                case 0: case 1:
+                //the enemy does a basic attack
+                PlayerScript target = enemyTarget();
+                target.TakeDamage(enemyUnit1.attack - target.defense);
+                DialogueText.text = "The enemy dealt " + (enemyUnit1.attack - target.defense) + " damage";
+                yield return new WaitForSeconds(2f);
+                StartCoroutine(CheckPartyHP(numTurns));
+                break;
+
+                case 2:
+                //attacks all
+                playerUnit1.TakeDamage(enemyUnit1.attack - playerUnit1.defense);
+                playerUnit2.TakeDamage(enemyUnit1.attack - playerUnit2.defense);
+                playerUnit3.TakeDamage(enemyUnit1.attack - playerUnit3.defense);
+                DialogueText.text = "The enemy attacked everyone!";
+                yield return new WaitForSeconds(2f);
+                StartCoroutine(CheckPartyHP(numTurns));
+                break;
+
+                case 3:case 4:
+                //buffs enemy
+                IncreaseAttack(enemyUnit1, 0.4);
+                IncreaseDefense(enemyUnit1, 0.4);
+                DialogueText.text = "The enemy increased their attack and defense!";
+                yield return new WaitForSeconds(2f);
+                StartCoroutine(CheckPartyHP(numTurns));
+                break;
+
+                case 5:
+                //debuffs all players
+                enemyUnit1.currentHP += 200;
+                ReduceAttack(playerUnit1, 0.2);
+                ReduceAttack(playerUnit2, 0.2);
+                ReduceAttack(playerUnit3, 0.2);
+                ReduceDefense(playerUnit1, 0.2);
+                ReduceDefense(playerUnit2, 0.2);
+                ReduceDefense(playerUnit3, 0.2);
+                DialogueText.text = "The enemy slightly healed themself and lowered your stats!";
+                yield return new WaitForSeconds(2f);
+                StartCoroutine(CheckPartyHP(numTurns));
+                break;
+            }
         }
     }
 
@@ -414,6 +415,8 @@ public class BattleSystem : MonoBehaviour
         else if(state == BattleState.LOST)
         {
             DialogueText.text = "You weren't funny enough...";
+            yield return new WaitForSeconds(2f);
+            SceneManager.LoadScene("Game Over");
         }
     }
 
