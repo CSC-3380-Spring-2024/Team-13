@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
+using Random = UnityEngine.Random;
+using JetBrains.Annotations;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST, BETWEENMOVES};
 public enum PartyTurn { MCTURN, SECONDTURN, THIRDTURN, NONE};
@@ -23,6 +26,12 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI SupportText;
     public TextMeshProUGUI SpecialText;
     public TextMeshProUGUI ActionText;
+
+    public TextMeshProUGUI AttackButtonAltText;
+    public TextMeshProUGUI SkillButtonAltText;
+    public TextMeshProUGUI SupportButtonAltText;
+    public TextMeshProUGUI SpecialButtonAltText;
+    public TextMeshProUGUI ActionButtonAltText;
 
     //refrences the HUDSs
     public BattleHUD playerHUD1;
@@ -62,7 +71,6 @@ public class BattleSystem : MonoBehaviour
 
     //Used for healthbar decay
     float lerpSpeed;
-
 
     void Start()
     {
@@ -147,34 +155,21 @@ public class BattleSystem : MonoBehaviour
         if (playerUnit1.currentHP > 0)
         {
             turn = PartyTurn.MCTURN;
-            DialogueText.text = "Quincy moves";
-            SkillText.text = "Balloon Flurry";
-            ActionText.text = "Bubble Bazooka";
-            SupportText.text = "Looksmaxx";
-            SpecialText.text = "Scary Clown";
+            UpdateButtonText();
         }
         else if (playerUnit2.currentHP > 0)
         {
             DialogueText.text = "Quincy is unconscious!";
             yield return new WaitForSeconds(4f);
             turn = PartyTurn.SECONDTURN;
-            DialogueText.text = "Qwynn moves!";
-            SkillText.text = "Confetti Grenade";
-            ActionText.text = "Resident Funny";
-            SupportText.text = "Refreshing Joke";
-            SpecialText.text = "Nah, I'd Win";
-
+            UpdateButtonText();
         }
         else if (playerUnit3.currentHP > 0)
         {
             DialogueText.text = "Qwynn is unconscious!";
             yield return new WaitForSeconds(4f);
             turn = PartyTurn.THIRDTURN;
-            DialogueText.text = "Quandale moves!";
-            SkillText.text = "Water Flower";
-            ActionText.text = "Tragic Display";
-            SupportText.text = "Manga Spoiler";
-            SpecialText.text = "Final Form";
+            UpdateButtonText();
         }
         else 
         {
@@ -650,20 +645,26 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.SECONDTURN:
             {
-                //Bluff the enemy
+                //If you roll a 7 you win!
 
                 tempTurn = PartyTurn.SECONDTURN;
                 turn = PartyTurn.NONE;
-                DialogueText.text = "Qwynn did nothing! Thanks for nothing Qwynn! Love u <3";
-                yield return new WaitForSeconds(2f);
+                if (7==Random.Range(1,20)){
+                    enemyUnit1.TakeDamage(enemyUnit1.maxHP);}
+                else{
+                    DialogueText.text = "Qwynn did nothing! Thanks for nothing Qwynn! Love u <3";
+                    yield return new WaitForSeconds(2f);}
                 break;
             }
             case PartyTurn.THIRDTURN:
-            {
-                //Self-embarrassment
+            {   
+                //Self-embarrassment; Debuff all players
 
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
+                ReduceAttack(playerUnit1, 0.5);
+                ReduceAttack(playerUnit2, 0.5);
+                ReduceAttack(playerUnit3, 0.5);
                 DialogueText.text = "We don't talk about Quandale... let's just skip his turn...";
                 yield return new WaitForSeconds(2f);
                 break;
@@ -910,21 +911,13 @@ public class BattleSystem : MonoBehaviour
                 {
                     state = BattleState.PLAYERTURN;
                     turn = PartyTurn.SECONDTURN;
-                    DialogueText.text = "Qwynn moves!";
-                    SkillText.text = "Confetti Grenade";
-                    ActionText.text = "Resident Funny";
-                    SupportText.text = "Refreshing Joke";
-                    SpecialText.text = "Nah, I'd Win";
+                    UpdateButtonText();
                 }
                 else if (playerUnit3.currentHP > 0)
                 {
                     state = BattleState.PLAYERTURN;
                     turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
+                    UpdateButtonText();
                 }
             }
             else if (tempTurn == PartyTurn.SECONDTURN)
@@ -933,17 +926,14 @@ public class BattleSystem : MonoBehaviour
                 {
                     state = BattleState.PLAYERTURN;
                     turn = PartyTurn.THIRDTURN;
-                    DialogueText.text = "Quandale moves!";
-                    SkillText.text = "Water Flower";
-                    ActionText.text = "Tragic Display";
-                    SupportText.text = "Manga Spoiler";
-                    SpecialText.text = "Final Form";
+                    UpdateButtonText();
                 }
             }
             else if (tempTurn == PartyTurn.THIRDTURN)
             {
                 state = BattleState.ENEMYTURN;
                 turn = PartyTurn.NONE;
+                UpdateButtonText();
                 StartCoroutine(EnemyTurn(enemyUnit1.enemyTurnCount));
             }
 
@@ -981,5 +971,58 @@ public class BattleSystem : MonoBehaviour
                 StartCoroutine(PlayerTurn());
             }
         }
+    }
+
+    //Sets the text for UI buttons
+    public void UpdateButtonText(){
+        switch (turn){
+            case PartyTurn.NONE:
+                AttackButtonAltText.text= "Attack";
+                SkillText.text = "Skill";
+                SkillButtonAltText.text="Skill";
+                ActionText.text = "Action";
+                ActionButtonAltText.text="Action";
+                SupportText.text = "Support";
+                SupportButtonAltText.text="Support";
+                SpecialText.text = "Special";
+                SpecialButtonAltText.text="Special";
+                break;
+            case PartyTurn.MCTURN:
+                DialogueText.text = "Quincy moves";
+                AttackButtonAltText.text= "Big Damage + Lifesteal";
+                SkillText.text = "Balloon Flurry";
+                SkillButtonAltText.text="Mega Damage";
+                ActionText.text = "Bubble Bazooka";
+                ActionButtonAltText.text="Big Damage + Lower Enemy Defense";
+                SupportText.text = "Looksmaxx";
+                SupportButtonAltText.text="Increase Team Defense";
+                SpecialText.text = "Scary Clown";
+                SpecialButtonAltText.text="I Wouldn't Recommend...";
+                break;
+            case PartyTurn.SECONDTURN:
+                DialogueText.text = "Qwynn moves!";
+                AttackButtonAltText.text= "Small Damage + Heal team";
+                SkillText.text = "Confetti Grenade";
+                SkillButtonAltText.text="Medium Damage";
+                ActionText.text = "Resident Funny";
+                ActionButtonAltText.text="Mega Damage";
+                SupportText.text = "Refreshing Joke";
+                SupportButtonAltText.text="Remove Team's Debuffs";
+                SpecialText.text = "Nah, I'd Win";
+                SpecialButtonAltText.text="Test Your Luck";
+                break;
+            case PartyTurn.THIRDTURN:
+                DialogueText.text = "Quandale moves!";
+                AttackButtonAltText.text= "Buff Team's Attack";
+                SkillText.text = "Water Flower";
+                SkillButtonAltText.text="Lower Enemy's Attack";
+                ActionText.text = "Tragic Display";
+                ActionButtonAltText.text="Heal Lowest Teammate";
+                SupportText.text = "Manga Spoiler";
+                SupportButtonAltText.text="Remove Enemy Buffs";
+                SpecialText.text = "Final Form";
+                SpecialButtonAltText.text="Quandale, Please Don't";
+                break;
+        } 
     }
 }
