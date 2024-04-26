@@ -5,10 +5,15 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public void LevelSelect() {
-        SceneManager.LoadScene("Level Select");
+        SceneHistory.LoadScene("Level Select");
+    }
+
+    public void Continue(){
+        SceneHistory.loadLevelScene();
     }
 
     public void Level1(){
+        SceneHistory.setLevelScene("Level 1");
         SceneManager.LoadScene("Level 1");
     }
 

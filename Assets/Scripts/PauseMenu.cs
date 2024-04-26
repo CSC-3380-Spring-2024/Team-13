@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : MonoBehaviour
+
+public class PauseMenu : MonoBehaviour 
 {
     public static bool Paused = false;
     public GameObject PauseMenuCanvas;
@@ -47,6 +48,6 @@ public class PauseMenu : MonoBehaviour
 
     public void MainMenuButton()
     {
-        SceneManager.LoadScene("MenuScene");
+        SceneHistory.LoadScene("MenuScene");
     }
 }
