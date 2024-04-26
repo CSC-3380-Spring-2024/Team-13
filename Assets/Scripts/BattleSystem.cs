@@ -85,7 +85,6 @@ public class BattleSystem : MonoBehaviour
       lerpSpeed = 3f * Time.deltaTime;
     }
 
-
     IEnumerator setupBattle(int battleNum)
     {
         GameObject playerGO1 = Instantiate(playerPrefab1, playerBattleStation);
@@ -184,9 +183,6 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         var random = new System.Random();
         int rand = random.Next(0, 5);
-
-        //Test 
-        //rand=3;
         
         int numTurns=turnsLeft;
 
@@ -410,7 +406,7 @@ public class BattleSystem : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(2f);
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("Levelcomplete");
         }
         else if(state == BattleState.LOST)
         {
