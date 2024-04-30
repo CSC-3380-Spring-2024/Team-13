@@ -10,7 +10,7 @@ public class PlayerCollision : MonoBehaviour
         // if the player collides with an enemy enter into BattleScene
         if (collision.gameObject.tag == "Enemy")
         {
-            SceneHistory.LoadScene("BattleScene");
+            SceneManager.LoadScene("BattleScene");
         }
     }
 }
