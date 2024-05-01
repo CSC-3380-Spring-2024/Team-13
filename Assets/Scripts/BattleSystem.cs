@@ -7,6 +7,7 @@ using TMPro;
 using System;
 using Random = UnityEngine.Random;
 using JetBrains.Annotations;
+using Unity.VisualScripting;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST, BETWEENMOVES};
 public enum PartyTurn { MCTURN, SECONDTURN, THIRDTURN, NONE};
@@ -41,7 +42,6 @@ public class BattleSystem : MonoBehaviour
 
     //refrences the Background image;
     public Image background;
-    public int battleCount;
 
     public BattleState state;
     public PartyTurn turn;
@@ -74,19 +74,17 @@ public class BattleSystem : MonoBehaviour
 
     void Start()
     {
-        battleCount = 1; 
         state = BattleState.START;
-        StartCoroutine(setupBattle(battleCount)); 
+        StartCoroutine(setupBattle()); 
     }
 
-    void Update()
-    {
+    void Update(){
       UpdatePlayerHealth();
       lerpSpeed = 3f * Time.deltaTime;
     }
 
-
-    IEnumerator setupBattle(int battleNum)
+    //Coroutine for Pre-battle
+    IEnumerator setupBattle()
     {
         GameObject playerGO1 = Instantiate(playerPrefab1, playerBattleStation);
         playerUnit1 = playerGO1.GetComponent<PlayerScript>();
@@ -95,7 +93,9 @@ public class BattleSystem : MonoBehaviour
         GameObject playerGO3 = Instantiate(playerPrefab3, playerBattleStation);
         playerUnit3 = playerGO3.GetComponent<PlayerScript>();
 
-        switch (battleNum){
+        //Instantiates enemy prefab depending on the level
+        int rand=PlayerPrefs.GetInt("currentlevel");
+        switch (rand){
         case 1: 
             {
                 GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
@@ -145,6 +145,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerTurn());
     }
     
+    //Coroutine for player turn
     IEnumerator PlayerTurn()
     {
         DialogueText.text = "It's your turn!";
@@ -178,15 +179,13 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Coroutine for enemy turn
     IEnumerator EnemyTurn(int turnsLeft)
     {
         DialogueText.text = "It's the enemy's turn!";
         yield return new WaitForSeconds(2f);
         var random = new System.Random();
         int rand = random.Next(0, 5);
-
-        //Test 
-        //rand=3;
         
         int numTurns=turnsLeft;
 
@@ -230,7 +229,7 @@ public class BattleSystem : MonoBehaviour
                     //attacks one player
                     PlayerScript target = enemyTarget();
                     target.TakeDamage(enemyUnit1.attack * 2 - target.defense);
-                    DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage to" + target.name;
+                    DialogueText.text = "The enemy dealt " + (enemyUnit1.attack * 2 - target.defense) + " damage to " + target.name;
                     yield return new WaitForSeconds(2f);
                     StartCoroutine(CheckPartyHP(numTurns));
                     break;
@@ -239,6 +238,7 @@ public class BattleSystem : MonoBehaviour
                 {
                     //removes enemy debuffs and buffs enemy
                     RemoveDebuffs(enemyUnit1);
+                    yield return new WaitForSeconds(.5f);
                     IncreaseAttack(enemyUnit1, 0.4);
                     IncreaseDefense(enemyUnit1, 0.4);
                     DialogueText.text = "The enemy removed all debuffs and increased their attack and defense!";
@@ -265,7 +265,7 @@ public class BattleSystem : MonoBehaviour
                         //brutally attacks one player
                         PlayerScript target = enemyTarget();
                         target.TakeDamage(enemyUnit1.attack*4 - target.defense);
-                        DialogueText.text = "The enemy dealt a whopping" + (enemyUnit1.attack - target.defense) + " damage";
+                        DialogueText.text = "The enemy dealt a whopping" + (enemyUnit1.attack - target.defense) + " damage to "+target.name;
                         yield return new WaitForSeconds(2f);
                         StartCoroutine(CheckPartyHP(numTurns));
                         break;
@@ -377,16 +377,19 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Coroutine for Post-battle
     IEnumerator EndBattle()
     {
-        battleCount++;
         if(state == BattleState.WON)
         {
             DialogueText.text = "You won!";
             yield return new WaitForSeconds(2f);
-            
-            
-            switch (battleCount){
+            //var random = new System.Random();
+            //int rand = random.Next(2, 5);
+
+            int rand = 2;
+
+            switch (rand){
                 case 2: 
                 {
                     enemyImage.sprite = laughing1;
@@ -405,12 +408,18 @@ public class BattleSystem : MonoBehaviour
                 case 5:
                 {
                     enemyImage.sprite = laughing4;
-                    battleCount = 1;
+                    
                     break;
                 }
             }
             yield return new WaitForSeconds(2f);
-            SceneManager.LoadScene("SampleScene");
+
+            //Adds 1 to the current level's defeated enemy count
+            int count = PlayerPrefs.GetInt("count"+PlayerPrefs.GetInt("currentLevel"));
+            PlayerPrefs.SetInt("count"+PlayerPrefs.GetInt("currentLevel"), count+1);
+
+            //Loads transition (levelcomplete) scene
+            SceneManager.LoadScene("Levelcomplete");
         }
         else if(state == BattleState.LOST)
         {
@@ -518,10 +527,7 @@ public class BattleSystem : MonoBehaviour
 
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
-                if (!(enemyUnit1.attack < enemyUnit1.baseAttack))
-                {
-                    enemyUnit1.attack = (int)(enemyUnit1.attack * 0.8);
-                }
+                enemyUnit1.attack = (int)(enemyUnit1.attack * 0.8);
                 DialogueText.text = "Quandale tricked them with a water flower, lowering the enemy's attack!";
                 yield return new WaitForSeconds(2f);
                 break;
@@ -560,11 +566,12 @@ public class BattleSystem : MonoBehaviour
             }
             case PartyTurn.THIRDTURN:
             {
-                //Heal lowest teammate
+                //Heal lowest teammate**Heals random teammate atm
 
                 tempTurn = PartyTurn.THIRDTURN;
                 turn = PartyTurn.NONE;
-                PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
+                //PlayerScript target = getLowestHP(playerUnit1, playerUnit2, playerUnit3);
+                PlayerScript target = enemyTarget();
                 if (target.currentHP < target.maxHP)
                 {
                     if ((target.currentHP + playerUnit3.attack) > target.maxHP)
@@ -668,8 +675,8 @@ public class BattleSystem : MonoBehaviour
                 ReduceAttack(playerUnit1, 0.5);
                 ReduceAttack(playerUnit2, 0.5);
                 ReduceAttack(playerUnit3, 0.5);
-                DialogueText.text = "We don't talk about Quandale... let's just skip his turn...";
-                yield return new WaitForSeconds(2f);
+                DialogueText.text = "Quandale's goofy ass grin gave the enemy an ego boost...";
+                yield return new WaitForSeconds(3f);
                 break;
             }
         }
@@ -779,7 +786,7 @@ public class BattleSystem : MonoBehaviour
     //finds the party member with the lowest hp
     public PlayerScript getLowestHP(PlayerScript p1, PlayerScript p2, PlayerScript p3)
     {
-        if (p1.currentHP < p2.currentHP && p1.currentHP < playerUnit3.currentHP)
+        if (p1.currentHP < p2.currentHP && p1.currentHP < p3.currentHP)
         {
             if(p1.currentHP > 0)    {return p1;}
 
@@ -789,7 +796,7 @@ public class BattleSystem : MonoBehaviour
 
                 else    {return p3;}
             }
-            else    {return p1;}
+            else    {return null;}
         }
         else if (p2.currentHP < p1.currentHP && p2.currentHP < p3.currentHP)
         {
@@ -801,7 +808,7 @@ public class BattleSystem : MonoBehaviour
 
                 else    {return p3;}
             }
-            else    {return p1;}
+            else    {return null;}
         }
         else if (p3.currentHP < p2.currentHP && p3.currentHP < p1.currentHP)
         {
@@ -813,9 +820,9 @@ public class BattleSystem : MonoBehaviour
 
                 else    {return p2;}
             }
-            else    {return p1;}
+            else    {return null;}
         }
-        else    {return p1;}
+        return null;
     }
 
     //enemy chooses which player to target
@@ -860,7 +867,7 @@ public class BattleSystem : MonoBehaviour
     //reduces target attack by a ratio
     public void ReduceAttack(PlayerScript target, double ratio)
     {
-        int newAttack = target.attack - (int)(target.baseAttack * ratio);
+        int newAttack = target.attack - (int)(target.attack * ratio);
         if (newAttack < 0)
         {
             target.attack = 0;
@@ -871,28 +878,36 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Increases defense of target by ratio
     public void IncreaseDefense(PlayerScript target, double ratio)
     {
         int newDefense = target.defense + (int)(target.baseDefense * ratio);
         target.defense = newDefense;
     }
 
+    //Increases attack of target by ratio
     public void IncreaseAttack(PlayerScript target, double ratio)
     {
         int newAttack = target.attack + (int)(target.baseAttack * ratio);
         target.attack = newAttack;
     }
 
+    //Removes debuffs from target
     public void RemoveDebuffs(PlayerScript target)
     {
-        target.attack = target.baseAttack;
-        target.defense = target.baseDefense;
+        if (target.attack<target.baseAttack){
+        target.attack = target.baseAttack;}
+        if (target.defense<target.baseDefense){
+        target.defense = target.baseDefense;}
     }
 
+    //Removes buffs from target
     public void RemoveBuffs(PlayerScript target)
     {
-        target.attack = target.baseAttack;
-        target.defense = target.baseDefense;
+        if (target.attack>target.baseAttack){
+        target.attack = target.baseAttack;}
+        if (target.defense>target.baseDefense){
+        target.defense = target.baseDefense;}
     }
 
     //Checks who's turn is next (Player or enemy)
@@ -945,10 +960,10 @@ public class BattleSystem : MonoBehaviour
 
     //Updates player HUD with new player health
     public void UpdatePlayerHealth(){
-        playerHUD1.SetHP(playerUnit1, lerpSpeed);
-        playerHUD2.SetHP(playerUnit2, lerpSpeed);
-        playerHUD3.SetHP(playerUnit3, lerpSpeed);
-        enemyHUD1.SetHP(enemyUnit1, lerpSpeed);
+        playerHUD1.SetHP(playerUnit1, lerpSpeed,0);
+        playerHUD2.SetHP(playerUnit2, lerpSpeed,0);
+        playerHUD3.SetHP(playerUnit3, lerpSpeed,0);
+        enemyHUD1.SetHP(enemyUnit1, lerpSpeed,1);
     }  
 
     //Checks if all party members are dead
