@@ -42,7 +42,6 @@ public class BattleSystem : MonoBehaviour
 
     //refrences the Background image;
     public Image background;
-    public int battleCount;
 
     public BattleState state;
     public PartyTurn turn;
@@ -75,18 +74,17 @@ public class BattleSystem : MonoBehaviour
 
     void Start()
     {
-        battleCount = 1; 
         state = BattleState.START;
-        StartCoroutine(setupBattle(battleCount)); 
+        StartCoroutine(setupBattle()); 
     }
 
-    void Update()
-    {
+    void Update(){
       UpdatePlayerHealth();
       lerpSpeed = 3f * Time.deltaTime;
     }
 
-    IEnumerator setupBattle(int battleNum)
+    //Coroutine for Pre-battle
+    IEnumerator setupBattle()
     {
         GameObject playerGO1 = Instantiate(playerPrefab1, playerBattleStation);
         playerUnit1 = playerGO1.GetComponent<PlayerScript>();
@@ -95,7 +93,9 @@ public class BattleSystem : MonoBehaviour
         GameObject playerGO3 = Instantiate(playerPrefab3, playerBattleStation);
         playerUnit3 = playerGO3.GetComponent<PlayerScript>();
 
-        switch (battleNum){
+        //Instantiates enemy prefab depending on the level
+        int rand=PlayerPrefs.GetInt("currentlevel");
+        switch (rand){
         case 1: 
             {
                 GameObject enemyGO = Instantiate(enemyPrefab1, enemyBattleStation1);
@@ -145,6 +145,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerTurn());
     }
     
+    //Coroutine for player turn
     IEnumerator PlayerTurn()
     {
         DialogueText.text = "It's your turn!";
@@ -178,6 +179,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Coroutine for enemy turn
     IEnumerator EnemyTurn(int turnsLeft)
     {
         DialogueText.text = "It's the enemy's turn!";
@@ -375,16 +377,19 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Coroutine for Post-battle
     IEnumerator EndBattle()
     {
-        battleCount++;
         if(state == BattleState.WON)
         {
             DialogueText.text = "You won!";
             yield return new WaitForSeconds(2f);
-            
-            
-            switch (battleCount){
+            //var random = new System.Random();
+            //int rand = random.Next(2, 5);
+
+            int rand = 2;
+
+            switch (rand){
                 case 2: 
                 {
                     enemyImage.sprite = laughing1;
@@ -403,18 +408,24 @@ public class BattleSystem : MonoBehaviour
                 case 5:
                 {
                     enemyImage.sprite = laughing4;
-                    battleCount = 1;
+                    
                     break;
                 }
             }
             yield return new WaitForSeconds(2f);
-            SceneHistory.LoadScene("Levelcomplete");
+
+            //Adds 1 to the current level's defeated enemy count
+            int count = PlayerPrefs.GetInt("count"+PlayerPrefs.GetInt("currentLevel"));
+            PlayerPrefs.SetInt("count"+PlayerPrefs.GetInt("currentLevel"), count+1);
+
+            //Loads transition (levelcomplete) scene
+            SceneManager.LoadScene("Levelcomplete");
         }
         else if(state == BattleState.LOST)
         {
             DialogueText.text = "You weren't funny enough...";
             yield return new WaitForSeconds(2f);
-            SceneHistory.LoadScene("Game Over");
+            SceneManager.LoadScene("Game Over");
         }
     }
 
@@ -867,18 +878,21 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Increases defense of target by ratio
     public void IncreaseDefense(PlayerScript target, double ratio)
     {
         int newDefense = target.defense + (int)(target.baseDefense * ratio);
         target.defense = newDefense;
     }
 
+    //Increases attack of target by ratio
     public void IncreaseAttack(PlayerScript target, double ratio)
     {
         int newAttack = target.attack + (int)(target.baseAttack * ratio);
         target.attack = newAttack;
     }
 
+    //Removes debuffs from target
     public void RemoveDebuffs(PlayerScript target)
     {
         if (target.attack<target.baseAttack){
@@ -887,6 +901,7 @@ public class BattleSystem : MonoBehaviour
         target.defense = target.baseDefense;}
     }
 
+    //Removes buffs from target
     public void RemoveBuffs(PlayerScript target)
     {
         if (target.attack>target.baseAttack){

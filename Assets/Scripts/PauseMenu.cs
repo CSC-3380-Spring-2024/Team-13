@@ -46,8 +46,9 @@ public class PauseMenu : MonoBehaviour
         Paused = false;
     }
 
+    //Used for "Main Menu" button
     public void MainMenuButton()
     {
-        SceneHistory.LoadScene("MenuScene");
+        SceneManager.LoadScene("MenuScene");
     }
 }

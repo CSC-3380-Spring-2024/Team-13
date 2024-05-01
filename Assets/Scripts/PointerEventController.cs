@@ -16,24 +16,30 @@ public class PointerEventController : MonoBehaviour,IPointerEnterHandler, IPoint
     public Sprite origimage;
     public Sprite altimage;
 
+    private static Vector3 scaleChange = new Vector3(0.2f,0.2f,0.2f);
+
     public int buttonType;
     //1: Button with changing text on hover
     //2: Button with changing size and sprite on hover
     //3: Button with changing size on hover
 
-    void Start(){
+    void Awake(){
         switch (buttonType){
             case 1:
                 Buttontext.enabled=true;
                 alternatetext.enabled=false;
                 break;
             case 2:
-                gameObject.GetComponent<RectTransform>().localScale=new Vector3(1,1,1);
+                gameObject.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
                 gameObject.GetComponent<UnityEngine.UI.Image>().sprite=origimage;
+                break;
+            case 3:
+                gameObject.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
                 break;
         }
     }
 
+    //Determines button change with pointer enters 
     public void OnPointerEnter(PointerEventData data)
     {
         switch (buttonType){
@@ -42,15 +48,16 @@ public class PointerEventController : MonoBehaviour,IPointerEnterHandler, IPoint
                 alternatetext.enabled=true;
                 break;
             case 2:
-                gameObject.GetComponent<RectTransform>().localScale=new Vector3(1.2f,1.2f,1.2f);
+                gameObject.GetComponent<RectTransform>().localScale+=scaleChange;
                 gameObject.GetComponent<UnityEngine.UI.Image>().sprite=altimage;
                 break;
             case 3:
-                gameObject.GetComponent<RectTransform>().localScale=new Vector3(1.1f,1.1f,1.1f);
+                gameObject.GetComponent<RectTransform>().localScale+=scaleChange;
                 break;
         }
     }
 
+    //Determines button change with pointer exits 
     public void OnPointerExit(PointerEventData eventData)
     {
         switch (buttonType){
@@ -59,12 +66,17 @@ public class PointerEventController : MonoBehaviour,IPointerEnterHandler, IPoint
                 alternatetext.enabled=false;
                 break;
             case 2:
-                gameObject.GetComponent<RectTransform>().localScale=new Vector3(1f,1f,1f);
+                gameObject.GetComponent<RectTransform>().localScale-=scaleChange;
                 gameObject.GetComponent<UnityEngine.UI.Image>().sprite=origimage;
                 break;
             case 3:
-                gameObject.GetComponent<RectTransform>().localScale=new Vector3(1f,1f,1f);
+                gameObject.GetComponent<RectTransform>().localScale-=scaleChange;
                 break;
         }
+    }
+
+    //Resets the size of the button when pressed
+    public void resetScale(){
+        gameObject.GetComponent<RectTransform>().localScale=new Vector3(1f,1f,1f);
     }
 }
