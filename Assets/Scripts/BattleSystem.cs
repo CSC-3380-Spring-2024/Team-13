@@ -968,7 +968,7 @@ public class BattleSystem : MonoBehaviour
 
     //Checks if all party members are dead
     IEnumerator CheckPartyHP(int turnsleft){
-        int turns = turnsleft;
+        int turns = turnsleft-1;
         if (playerUnit1.currentHP <= 0 && playerUnit2.currentHP <= 0 && playerUnit3.currentHP <= 0){
             state = BattleState.LOST;
             StartCoroutine(EndBattle());
@@ -981,7 +981,7 @@ public class BattleSystem : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 DialogueText.text = "The enemy moves again!";
                 yield return new WaitForSeconds(2f);
-                StartCoroutine(EnemyTurn(turns-1));
+                StartCoroutine(EnemyTurn(turns));
             }
             else
             {

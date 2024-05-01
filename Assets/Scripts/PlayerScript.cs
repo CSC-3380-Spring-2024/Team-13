@@ -12,6 +12,7 @@ public class PlayerScript : MonoBehaviour
     public new string name;
     public int maxHP;
     public int enemyTurnCount;
+    public int ID;
 
     public void TakeDamage(int damage)
     {

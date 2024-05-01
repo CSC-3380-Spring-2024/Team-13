@@ -6404,7 +6404,6 @@ MonoBehaviour:
   playerHUD3: {fileID: 1400658700}
   enemyHUD1: {fileID: 1035712858}
   background: {fileID: 1563713619}
-  battleCount: 0
   state: 0
   turn: 3
   playerPrefab1: {fileID: 859456157}
@@ -8683,6 +8682,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3488513886113834286, guid: ba80d6de9bdce0b44b71798f0eff0994, type: 3}
+      propertyPath: ID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3488513886113834286, guid: ba80d6de9bdce0b44b71798f0eff0994, type: 3}
       propertyPath: name
       value: Quincy
       objectReference: {fileID: 0}
@@ -8862,6 +8865,10 @@ PrefabInstance:
     - target: {fileID: 4205212410561853123, guid: 065d5088bf0b0bc46a4246e107c69641, type: 3}
       propertyPath: m_Name
       value: OfficeMan
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042916949166346447, guid: 065d5088bf0b0bc46a4246e107c69641, type: 3}
+      propertyPath: ID
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5042916949166346447, guid: 065d5088bf0b0bc46a4246e107c69641, type: 3}
       propertyPath: name
