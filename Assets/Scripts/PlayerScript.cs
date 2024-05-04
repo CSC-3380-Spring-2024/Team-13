@@ -29,5 +29,33 @@ public class PlayerScript : MonoBehaviour
             currentHP -= damage;
         }
     }
+
+
+    public void SetPlayerHP(int newCurrentHP, int newMaxHP)
+    {
+        currentHP = newCurrentHP;
+        maxHP = newMaxHP;
+    }
+    
+    public void SetEasyDifficulty()
+    {
+       SetPlayerHP(2000,2000);
+    }
+
+    public void SetMediumDifficulty()
+    {
+        SetPlayerHP(1500,1500);
+    }
+
+    public void SetHardDifficulty() 
+    {
+        SetPlayerHP(1000,1000);
+    }
+
+    public void SetInsaneDifficulty() 
+    {
+        SetPlayerHP(500,500);
+    }
+    
 }
 
