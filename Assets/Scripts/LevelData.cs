@@ -29,93 +29,105 @@ public class LevelData : MonoBehaviour
 
     void Awake()
     {
-        //
+        highestlevel = PlayerPrefs.GetInt("highestLevel", 1);
+        currentlevel = PlayerPrefs.GetInt("currentLevel", 1);
 
-        highestlevel = PlayerPrefs.GetInt("highestLevel",1);
-        currentlevel = PlayerPrefs.GetInt("currentLevel",1);
+        lvl1count = PlayerPrefs.GetInt("count1", 0);
+        lvl2count = PlayerPrefs.GetInt("count2", 0);
 
-        lvl1count = PlayerPrefs.GetInt("count1",0);
-        lvl2count = PlayerPrefs.GetInt("count2",0);
-
-        lvl1bool = PlayerPrefs.GetInt("bool1",0);
-        lvl2bool = PlayerPrefs.GetInt("bool2",0);
-        lvl3bool = PlayerPrefs.GetInt("bool3",0);
-        lvl4bool = PlayerPrefs.GetInt("bool4",0);
-        lvl5bool = PlayerPrefs.GetInt("bool5",0);
+        lvl1bool = PlayerPrefs.GetInt("bool1", 0);
+        lvl2bool = PlayerPrefs.GetInt("bool2", 0);
+        lvl3bool = PlayerPrefs.GetInt("bool3", 0);
+        lvl4bool = PlayerPrefs.GetInt("bool4", 0);
+        lvl5bool = PlayerPrefs.GetInt("bool5", 0);
 
         updateLevels();
     }
 
     //Called when level select scene is loaded
-    void OnEnable(){
+    void OnEnable()
+    {
         Debug.Log("Enabled!");
         updateLevels();
     }
 
     //Updates level select images (whether button is interactable, lock img, check img)
-    public void updateLevels(){
+    public void updateLevels()
+    {
         highestlevel = PlayerPrefs.GetInt("highestLevel");
-        for (int i = 0;i<levelButtons.Length;i++){
-            int lvlnum = i+1;
+        for (int i = 0; i < levelButtons.Length; i++)
+        {
+            int lvlnum = i + 1;
 
-            //Test to see if levels are updating properly
-            //Debug.Log(PlayerPrefs.GetInt("count" +lvlnum,0));
-
-            if (defeats.Length>i){ 
-            defeats[i].enabled=false;}
+            if (lvlnum == 1 && PlayerPrefs.GetInt("count" + lvlnum) >= 3)
+            {
+                // Unlock level 2
+                highestlevel = Math.Max(highestlevel, 2);
+                PlayerPrefs.SetInt("highestLevel", highestlevel);
+                if (defeats.Length > i)
+                {
+                    defeats[i].enabled = false;
+                }
+            }
 
             //Locks level if its past highestlevel unlocked
-            if (lvlnum>highestlevel){
+            if (lvlnum > highestlevel)
+            {
                 levelButtons[i].enabled = false;
-                lockimgs[i].enabled=true;
-                checkimgs[i].enabled=false;
+                lockimgs[i].enabled = true;
+                checkimgs[i].enabled = false;
             }
             //Determines if level is completed 
-            else if (PlayerPrefs.GetInt("bool"+lvlnum)==1){
+            else if (PlayerPrefs.GetInt("bool" + lvlnum) == 1)
+            {
                 lockimgs[i].enabled = false;
-                checkimgs[i].enabled=true;
-                levelButtons[i].enabled=false;
+                checkimgs[i].enabled = true;
+                levelButtons[i].enabled = false;
             }
             //Level is unlocked and not complete
-            else{
+            else
+            {
                 lockimgs[i].enabled = false;
-                levelButtons[i].enabled=true;
-                checkimgs[i].enabled=false;
-                defeats[i].enabled=true;
+                levelButtons[i].enabled = true;
+                checkimgs[i].enabled = false;
+                defeats[i].enabled = true;
 
                 //Updates the enemydefeats count for each level
-                switch(lvlnum){
+                switch (lvlnum)
+                {
                     case 1:
-                        defeats[i].text= (PlayerPrefs.GetInt("count"+lvlnum))+"/3";
+                        defeats[i].text = (PlayerPrefs.GetInt("count" + lvlnum)) + "/3";
                         break;
                     case 2:
-                        defeats[i].text= (PlayerPrefs.GetInt("count"+lvlnum))+"/1";
+                        defeats[i].text = (PlayerPrefs.GetInt("count" + lvlnum)) + "/1";
                         break;
-                } 
-            }    
+                }
+            }
         }
     }
 
     //Used for level select buttons
-    public void loadLevelScene(int num){
-        PlayerPrefs.SetInt("currentLevel",num);
-        SceneManager.LoadScene("Level "+num);
+    public void loadLevelScene(int num)
+    {
+        PlayerPrefs.SetInt("currentLevel", num);
+        SceneManager.LoadScene("Level " + num);
     }
 
     //Resets player data
-    public static void Reset(){
-        
-        PlayerPrefs.SetInt("highestLevel",1);
-        PlayerPrefs.SetInt("currentLevel",1);
+    public static void Reset()
+    {
 
-        PlayerPrefs.SetInt("count1",0);
-        PlayerPrefs.SetInt("count2",0);
+        PlayerPrefs.SetInt("highestLevel", 1);
+        PlayerPrefs.SetInt("currentLevel", 1);
 
-        PlayerPrefs.SetInt("bool1",0);
-        PlayerPrefs.SetInt("bool2",0);
-        PlayerPrefs.SetInt("bool3",0);
-        PlayerPrefs.SetInt("bool4",0);
-        PlayerPrefs.SetInt("bool5",0);
+        PlayerPrefs.SetInt("count1", 0);
+        PlayerPrefs.SetInt("count2", 0);
+
+        PlayerPrefs.SetInt("bool1", 0);
+        PlayerPrefs.SetInt("bool2", 0);
+        PlayerPrefs.SetInt("bool3", 0);
+        PlayerPrefs.SetInt("bool4", 0);
+        PlayerPrefs.SetInt("bool5", 0);
 
         PlayerPrefs.Save();
 
