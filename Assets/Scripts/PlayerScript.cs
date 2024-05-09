@@ -31,31 +31,24 @@ public class PlayerScript : MonoBehaviour
     }
 
 
-    public void SetPlayerHP(int newCurrentHP, int newMaxHP)
-    {
-        currentHP = newCurrentHP;
-        maxHP = newMaxHP;
-    }
-    
     public void SetEasyDifficulty()
-    {
-       SetPlayerHP(2000,2000);
-    }
+{
+    PlayerPrefs.SetInt("difficulty", 1); //1 for Easy difficulty
+}
 
-    public void SetMediumDifficulty()
-    {
-        SetPlayerHP(1500,1500);
-    }
+public void SetMediumDifficulty()
+{
+    PlayerPrefs.SetInt("difficulty", 2); //2 for Medium difficulty
+}
 
-    public void SetHardDifficulty() 
-    {
-        SetPlayerHP(1000,1000);
-    }
+public void SetHardDifficulty()
+{
+    PlayerPrefs.SetInt("difficulty", 3); //3 for Hard difficulty
+}
 
-    public void SetInsaneDifficulty() 
-    {
-        SetPlayerHP(500,500);
-    }
-    
+public void SetInsaneDifficulty()
+{
+    PlayerPrefs.SetInt("difficulty", 4); //4 for Insane difficulty
+}
 }
 

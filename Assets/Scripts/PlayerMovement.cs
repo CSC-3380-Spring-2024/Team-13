@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
+    //Update movement of player based on user inputs
     void Update()
     {
         movement.x = Input.GetAxisRaw("Horizontal");

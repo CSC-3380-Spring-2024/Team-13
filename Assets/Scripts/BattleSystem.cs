@@ -93,6 +93,51 @@ public class BattleSystem : MonoBehaviour
         GameObject playerGO3 = Instantiate(playerPrefab3, playerBattleStation);
         playerUnit3 = playerGO3.GetComponent<PlayerScript>();
 
+        switch (PlayerPrefs.GetInt("difficulty"))
+        {
+            case 1:
+                playerUnit1.currentHP = 1500;
+                playerUnit1.maxHP = 1500;
+                playerUnit2.currentHP = 1500;
+                playerUnit2.maxHP = 1500;
+                playerUnit3.currentHP = 1500;
+                playerUnit3.maxHP = 1500;
+                break;
+            case 2:
+                playerUnit1.currentHP = 1000;
+                playerUnit1.maxHP = 1000;
+                playerUnit2.currentHP = 1000;
+                playerUnit2.maxHP = 1000;
+                playerUnit3.currentHP = 1000;
+                playerUnit3.maxHP = 1000;
+                break;
+            case 3:
+                playerUnit1.currentHP = 750;
+                playerUnit1.maxHP = 750;
+                playerUnit2.currentHP = 750;
+                playerUnit2.maxHP = 750;
+                playerUnit3.currentHP = 750;
+                playerUnit3.maxHP = 750;
+                break;
+            case 4:
+                playerUnit1.currentHP = 500;
+                playerUnit1.maxHP = 500;
+                playerUnit2.currentHP = 500;
+                playerUnit2.maxHP = 500;
+                playerUnit3.currentHP = 500;
+                playerUnit3.maxHP = 500;
+                break;
+            default:
+                //set the default difficulty if none is selected
+                playerUnit1.currentHP = 1000;
+                playerUnit1.maxHP = 1000;
+                playerUnit2.currentHP = 1000;
+                playerUnit2.maxHP = 1000;
+                playerUnit3.currentHP = 1000;
+                playerUnit3.maxHP = 1000;
+                break;
+        }
+
         //Instantiates enemy prefab depending on the level
         int rand=PlayerPrefs.GetInt("currentlevel");
         switch (rand){
