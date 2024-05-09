@@ -1,12 +1,20 @@
-**Welcome to Team-13's Project : Clowning Around !**
+# Team 13 - Clowning Around
 
-Below I will explain the steps needed for anyone to start development on our game.
-        
+Welcome to our project, Clowning Around! This is our repository containing all the necessary files for our game. Please see information below to learn how to install and edit our game yourselves. 
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Overview](#overview)
+- [Details-of-Repository](#details)
+- [FuturePlans](#FuturePlans)
+
+## Installation <a name="installation"></a>
 1.) Clone the repository
 
 
 
-2.) Install Unity if needed here : https://unity.com/download 
+2.) Install Unity/UnityHub if needed here : [Unity Download](https://unity.com/download)
 
 
 
@@ -21,13 +29,25 @@ Below I will explain the steps needed for anyone to start development on our gam
 
 
 5.) The project will be added to your Unity Home Screen. Double click it to launch the project, you will need to install the Unity Editor
-  in order to open the project. Install this editor and you should be good to go. Make sure to have an IDE such as VScode installed in order to view our scripts if needed.
-  
+  in order to open the project. Install this editor and you should be good to go. Make sure to have an IDE such as VScode installed in order to view our scripts if needed. to run the game from within the unity editor, click on the play button near the top of the screen
 
-**Details of our repository**
-
+Note : **if you just want to launch them game, go to ~/build and run the executable file**
 
 
-The assets folder is where most of our project's important data is kept. It contains our sprites, animations, map assets, backgrounds, scenes, and scripts. To look at our 
-code, just got to the scripts folder under assets in the repository. Here there are scripts that run the functionality of many parts of our game such as : the menus,
-HUDs, BattleSystem, Player Specifications, Player movement, Scene Loading, etc. Our scripts are commented to help any newcomers understand what different parts of the code actually does. The TextMeshPro folder holds the files for any of our fonts, shaders, and other resources. 
+## Overview <a name="overview"></a>
+Clowning Around is a Topdown RPG game with turn-based combat. You play as a clown trying to spread happiness to office workers who have become super depressed and angry with the world. Clear the levels to progress through the game and make everyone smile! The combat system includes many jokes and references to media in the real world. The player and enemies have the ability to buff and debuff one another allowing for strategic attack sequences to improve damage! The audio heard throughout the game is all popular clown music with a bit of a twist :). Thanks for playing and good luck on your adventure!
+
+## Details-of-Repository <a name="details"></a>
+
+Our repository is sorted into different folders to help with organization. 
+- If you are looking to see how our scripts or how game is coded, go to ~/assets/scripts
+- If you are looking for sprites, go to ~/assets and ~/assets/CityAssets
+- If you are looking for animations go to ~/assets/animations
+
+## FuturePlans <a name="FuturePlans"></a>
+- Finish out the remaining levels
+- Cleanup code/prefabs to make more flexible
+- larger map
+- ability to walk between topdown scenes
+- more menu options (language, controls, etc)
+
