@@ -5,7 +5,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,7 +28,8 @@ public class LevelData : MonoBehaviour
 
     void Awake()
     {
-        highestlevel = PlayerPrefs.GetInt("highestLevel", 1);
+        // Ensure that level 1 is unlocked by default
+        highestlevel = Math.Max(PlayerPrefs.GetInt("highestLevel", 1), 1);
         currentlevel = PlayerPrefs.GetInt("currentLevel", 1);
 
         lvl1count = PlayerPrefs.GetInt("count1", 0);
