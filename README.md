@@ -35,7 +35,7 @@ Note : **if you just want to launch them game, go to ~/build and run the executa
 
 
 ## Overview <a name="overview"></a>
-Clowning Around is a Topdown RPG game with turn-based combat. You play as a clown trying to spread happiness to office workers who have become super depressed and angry with the world. Clear the levels to progress through the game and make everyone smile! The combat system includes many jokes and references to media in the real world. The player and enemies have the ability to buff and debuff one another allowing for strategic attack sequences to improve damage! The audio heard throughout the game is all popular clown music with a bit of a twist :). Thanks for playing and good luck on your adventure!
+Clowning Around is a Topdown RPG game with turn-based combat. You play as a clown trying to spread happiness to office workers who have become super depressed and angry with the world. Clear the levels to progress through the game and make everyone smile! The combat system includes many jokes and references to media in the real world. The player and enemies have the ability to buff and debuff one another allowing for strategic attack sequences to improve damage! The audio heard throughout the game is all popular clown music with a bit of a twist :). The player can also change the difficulty of their playthough in the options in the main menu. Each difficulty changes the overall health of the player. Thanks for playing and good luck on your adventure!
 
 ## Details-of-Repository <a name="details"></a>
 
